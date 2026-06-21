@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
 import Login from './pages/Login';
+import { Toaster } from './components/ui/Toast';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <Toaster />
     </div>
   );
 }

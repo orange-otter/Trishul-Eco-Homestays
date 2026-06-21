@@ -20,7 +20,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-border dark:border-gray-800 transition-colors duration-300">
+    <header className="sticky top-0 z-50 bg-background/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-white/20 dark:border-white/5 shadow-sm transition-colors duration-300">
       <nav className="max-w-[1200px] mx-auto px-6 h-20 flex items-center justify-between">
         <Link to="/" className="text-xl md:text-2xl font-bold font-serif text-primary-hover dark:text-primary-light tracking-wide flex items-center gap-1">
           <span>Trishul</span> <span className="font-normal italic text-secondary">Eco-Homestays</span>

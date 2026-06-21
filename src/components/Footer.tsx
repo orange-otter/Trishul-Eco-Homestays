@@ -46,16 +46,25 @@ export default function Footer() {
           <p className="text-primary-light opacity-80 text-sm mb-2 mt-2">
             Join our newsletter for updates on new homestays and eco-tourism initiatives.
           </p>
-          <div className="flex flex-col gap-3">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              import('./ui/Toast').then(({ toast }) => {
+                toast.success('Successfully subscribed to the newsletter!');
+              });
+            }} 
+            className="flex flex-col gap-3"
+          >
             <Input 
               type="email" 
+              required
               placeholder="Your email address" 
               className="bg-primary/50 border-primary-light/20 text-white placeholder:text-gray-400"
             />
-            <Button variant="secondary" className="w-full">
+            <Button variant="secondary" className="w-full" type="submit">
               Subscribe
             </Button>
-          </div>
+          </form>
           <div className="flex gap-4 mt-4">
             <a href="#" className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-light hover:bg-secondary hover:text-white transition-colors"><Globe size={20} /></a>
             <a href="#" className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-light hover:bg-secondary hover:text-white transition-colors"><Camera size={20} /></a>
