@@ -1,0 +1,28 @@
+.featured-section {
+  padding: 5rem 0;
+  background-color: var(--background);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-hover);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .featured-section {
+    padding: 3rem 0;
+  }
+  .section-title {
+    font-size: 2rem;
+  }
+  .card-grid {
+    gap: 1.5rem;
+  }
+}
