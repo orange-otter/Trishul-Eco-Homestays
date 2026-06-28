@@ -7,30 +7,20 @@ import { Loader } from '../components/ui/Loader';
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  const [rooms, setRooms] = useState<any[]>([]);
 
-  const mockHomestays = [
-    {
-      title: "Pristine Peaks Homestay",
-      description: "Experience the serenity of the Himalayas with organic farming and authentic local Garhwali cuisine prepared by the host family.",
-      image: "https://images.unsplash.com/photo-1542224566-6e85f2e6772f?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      title: "Chopta Meadows Retreat",
-      description: "Cozy wooden cottages right in the middle of lush green bugyals. Perfect for meditation and reconnecting with nature.",
-      image: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      title: "Himalayan Hearth",
-      description: "A traditional stone house offering spectacular sunrise views of the Nanda Devi range. Solar-powered and eco-friendly.",
-      image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
-    }
-  ];
+  useEffect(() => {
+    fetch('http://localhost:5000/api/rooms')
+      .then((res) => res.json())
+      .then((data) => {
+        setRooms(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch rooms:", err);
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <div className="min-h-[60vh] py-16 md:py-24 px-6 max-w-[1200px] mx-auto">
@@ -97,13 +87,13 @@ export default function Dashboard() {
               Recommended for You
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {mockHomestays.map((stay, index) => (
+              {rooms.map((stay) => (
                 <Card 
-                  key={index}
-                  title={stay.title}
-                  description={stay.description}
-                  image={stay.image}
-                  actionText="View Details"
+                  key={stay.id}
+                  title={stay.name}
+                  description={stay.description || "A wonderful homestay in Chopta."}
+                  image={"https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
+                  actionText={`Book for ₹${stay.price}`}
                   actionLink={`/dashboard`}
                 />
               ))}
