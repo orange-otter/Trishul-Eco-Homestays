@@ -57,6 +57,13 @@ class Room(RoomBase):
 def get_rooms(db: Session = Depends(get_db)):
     try:
         models.Base.metadata.create_all(bind=engine)
+        # Seed data if empty
+        if db.query(models.RoomModel).count() == 0:
+            db.add_all([
+                models.RoomModel(name="Himalayan Heritage Home", price=2500, description="A traditional stone and wood house offering panoramic views."),
+                models.RoomModel(name="Chopta Eco Retreat", price=1800, description="Sustainable mud cottages in the heart of Chopta.")
+            ])
+            db.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
         
