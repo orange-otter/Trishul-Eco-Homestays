@@ -27,6 +27,9 @@ except Exception as e:
 Base = declarative_base()
 
 def get_db():
+    if SessionLocal is None:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail="Database connection failed to initialize during server startup.")
     db = SessionLocal()
     try:
         yield db
