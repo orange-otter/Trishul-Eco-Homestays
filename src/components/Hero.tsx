@@ -14,7 +14,7 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink, image }:
   return (
     <section className="py-16 md:py-24 overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="flex flex-col gap-6 lg:pr-8">
+        <div className="flex flex-col gap-6 lg:pr-8 text-center lg:text-left items-center lg:items-start">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif text-text-primary dark:text-white leading-tight animate-in slide-in-from-bottom-4 duration-700">
             {headline}
           </h1>
