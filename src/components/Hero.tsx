@@ -34,7 +34,7 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink, image }:
             <img 
               src={image} 
               alt={headline} 
-              className="absolute inset-0 w-full h-full object-cover object-[80%_center] md:object-center group-hover:scale-105 transition-transform duration-1000" 
+              className="absolute inset-0 w-full h-full object-cover object-[60%_center] md:object-center group-hover:scale-105 transition-transform duration-1000" 
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
           </div>
