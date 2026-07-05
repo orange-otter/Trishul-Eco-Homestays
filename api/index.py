@@ -1,11 +1,17 @@
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from database import engine, get_db
+import models
 
 load_dotenv()
+
+# Create tables if they don't exist
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Trishul Eco-Homestays API")
 
@@ -17,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global Exception Handler (Middleware-like error handling)
+# Global Exception Handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
@@ -25,7 +31,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"message": "An unexpected error occurred.", "details": str(exc)},
     )
 
-# Models
+# Models (Pydantic for validation/responses)
 class RoomBase(BaseModel):
     name: str
     price: int
@@ -43,72 +49,72 @@ class RoomUpdate(BaseModel):
 
 class Room(RoomBase):
     id: int
-
-# In-memory "Database"
-rooms_db: List[Room] = [
-    Room(id=1, name="Himalayan View Room", price=2500, is_available=True, description="Wake up to a majestic sunrise over the snow-capped Himalayan peaks. Features a private balcony and traditional wooden architecture."),
-    Room(id=2, name="Forest Retreat", price=1800, is_available=False, description="Nestled near the dense oak and rhododendron forests. Perfect for bird watchers and nature lovers seeking complete peace."),
-    Room(id=3, name="Traditional Mud House", price=1200, is_available=True, description="Experience authentic village life in our eco-friendly mud and stone house. Naturally insulated for a cozy stay during winters."),
-    Room(id=4, name="Star Gazer Tent", price=2000, is_available=True, description="Premium Swiss tent pitched in the meadows of Chopta. Equipped with a transparent roof section for stargazing at night."),
-    Room(id=5, name="Family Suite", price=4500, is_available=True, description="Spacious two-room suite ideal for families or large groups. Includes a shared sitting area and locally sourced organic meals."),
-    Room(id=6, name="Solo Traveler Pod", price=800, is_available=True, description="Budget-friendly, comfortable single bed in a shared eco-dormitory. Great for trekkers heading to Tungnath."),
-]
-next_room_id = 7
+    
+    class Config:
+        from_attributes = True
 
 # 1. GET list of all items
 @app.get("/api/rooms", response_model=List[Room], status_code=status.HTTP_200_OK)
-def get_rooms():
-    return rooms_db
+def get_rooms(db: Session = Depends(get_db)):
+    rooms = db.query(models.RoomModel).all()
+    return rooms
 
-# 2. GET search/filter (Additional Endpoint)
+# 2. GET search/filter
 @app.get("/api/rooms/search/", response_model=List[Room], status_code=status.HTTP_200_OK)
-def search_rooms(q: Optional[str] = None, max_price: Optional[int] = None):
-    results = rooms_db
+def search_rooms(q: Optional[str] = None, max_price: Optional[int] = None, db: Session = Depends(get_db)):
+    query = db.query(models.RoomModel)
     if q:
-        results = [r for r in results if q.lower() in r.name.lower() or (r.description and q.lower() in r.description.lower())]
+        search_term = f"%{q.lower()}%"
+        query = query.filter(
+            models.RoomModel.name.ilike(search_term) | 
+            models.RoomModel.description.ilike(search_term)
+        )
     if max_price is not None:
-        results = [r for r in results if r.price <= max_price]
-    return results
+        query = query.filter(models.RoomModel.price <= max_price)
+    
+    return query.all()
 
 # 3. GET single item
 @app.get("/api/rooms/{room_id}", response_model=Room, status_code=status.HTTP_200_OK)
-def get_room(room_id: int):
-    room = next((r for r in rooms_db if r.id == room_id), None)
+def get_room(room_id: int, db: Session = Depends(get_db)):
+    room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not room:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
     return room
 
 # 4. POST create item
 @app.post("/api/rooms", response_model=Room, status_code=status.HTTP_201_CREATED)
-def create_room(room: RoomCreate):
-    global next_room_id
-    new_room = Room(id=next_room_id, **room.model_dump())
-    rooms_db.append(new_room)
-    next_room_id += 1
+def create_room(room: RoomCreate, db: Session = Depends(get_db)):
+    new_room = models.RoomModel(**room.model_dump())
+    db.add(new_room)
+    db.commit()
+    db.refresh(new_room)
     return new_room
 
 # 5. PUT/PATCH update item
 @app.patch("/api/rooms/{room_id}", response_model=Room, status_code=status.HTTP_200_OK)
-def update_room(room_id: int, room_update: RoomUpdate):
-    room_idx = next((i for i, r in enumerate(rooms_db) if r.id == room_id), None)
-    if room_idx is None:
+def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db)):
+    db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
+    if not db_room:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
     
-    current_room = rooms_db[room_idx]
     update_data = room_update.model_dump(exclude_unset=True)
-    updated_room_data = current_room.model_copy(update=update_data)
-    rooms_db[room_idx] = updated_room_data
+    for key, value in update_data.items():
+        setattr(db_room, key, value)
     
-    return updated_room_data
+    db.commit()
+    db.refresh(db_room)
+    return db_room
 
 # 6. DELETE remove item
 @app.delete("/api/rooms/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_room(room_id: int):
-    room_idx = next((i for i, r in enumerate(rooms_db) if r.id == room_id), None)
-    if room_idx is None:
+def delete_room(room_id: int, db: Session = Depends(get_db)):
+    db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
+    if not db_room:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
     
-    rooms_db.pop(room_idx)
+    db.delete(db_room)
+    db.commit()
     return None
 
 if __name__ == "__main__":

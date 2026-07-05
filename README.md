@@ -30,9 +30,36 @@ To run the frontend project locally:
 
 To run the Python/FastAPI backend locally:
 
-1. Navigate to the `backend` folder: `cd backend`
+1. Navigate to the `api` folder: `cd api`
 2. Create and activate a virtual environment (`python -m venv venv`, then `venv\Scripts\activate` on Windows or `source venv/bin/activate` on Mac/Linux)
-3. Install dependencies: `pip install fastapi uvicorn python-dotenv`
-4. Copy `.env.example` to `.env` and configure variables.
-5. Start the development server: `uvicorn main:app --reload`
-   (The backend typically runs on `http://localhost:8000`)
+3. Install dependencies: `pip install -r requirements.txt`
+4. Copy `.env.example` to `.env` (if exists) and configure variables including your `DATABASE_URL`.
+5. Start the development server: `uvicorn index:app --reload --port 5000`
+
+## Database Choice & Setup
+
+### Choice: PostgreSQL (via Supabase)
+We chose **PostgreSQL** hosted on **Supabase** because our data (Rooms) is highly structured and relational. The fields (`name`, `price`, `is_available`, etc.) are well-defined and predictable, making a SQL relational database the perfect fit. Supabase also provides an excellent connection pooler for serverless deployments.
+
+### Setup Instructions
+1. Go to [Supabase](https://supabase.com) and create a free project.
+2. Generate a secure database password and save it.
+3. Once the database is provisioned, go to **Project Settings -> Database**.
+4. Enable **Use connection pooling** and copy the **Session pooler** URI.
+5. In the `api` folder, copy `.env.example` to `.env`.
+6. Set `DATABASE_URL` to the copied URI, replacing `[YOUR-PASSWORD]` with your actual password.
+7. Run `python index.py` (or start `uvicorn`) locally. SQLAlchemy will automatically create the required tables in Supabase on startup.
+
+### Schema Diagram
+The database relies on PostgreSQL via Supabase and uses SQLAlchemy (see `api/models.py`). Below is the schema layout for the core entities:
+
+```mermaid
+erDiagram
+    Room {
+        int id PK
+        string name
+        int price
+        boolean is_available
+        string description
+    }
+```
