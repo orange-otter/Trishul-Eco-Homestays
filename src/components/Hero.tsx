@@ -30,11 +30,11 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink, image }:
           </div>
         </div>
         {image && (
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-1000 delay-200 aspect-[4/3] md:aspect-auto h-full min-h-[400px] group">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-1000 delay-200 aspect-[4/3] md:aspect-auto h-full min-h-[300px] md:min-h-[400px] group">
             <img 
               src={image} 
               alt={headline} 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+              className="absolute inset-0 w-full h-full object-cover object-[80%_center] md:object-center group-hover:scale-105 transition-transform duration-1000" 
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
           </div>
