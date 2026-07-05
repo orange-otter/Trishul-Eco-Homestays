@@ -1,6 +1,5 @@
 fastapi
 uvicorn
 pydantic
-python-dotenv
 sqlalchemy
 pg8000

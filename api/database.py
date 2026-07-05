@@ -2,10 +2,6 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-
-# Try to load .env from the current directory
-load_dotenv()
 
 # The user provided the URL directly, so we will use it instead of relying on Vercel Env Vars
 DATABASE_URL = "postgresql://postgres.mlkblvegideqoirezuwb:qiX1zFXKCyy2dK28@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
