@@ -3,4 +3,4 @@ uvicorn
 pydantic
 python-dotenv
 sqlalchemy
-psycopg2-binary
+pg8000
