@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
 import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
 import { Toaster } from './components/ui/Toast';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/homestays" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
         </Routes>
