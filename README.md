@@ -55,11 +55,28 @@ The database relies on PostgreSQL via Supabase and uses SQLAlchemy (see `api/mod
 
 ```mermaid
 erDiagram
+    User ||--o{ Booking : places
+    Room ||--o{ Booking : has
+
+    User {
+        int id PK
+        string name
+        string email
+        boolean is_admin
+    }
     Room {
         int id PK
         string name
         int price
         boolean is_available
         string description
+    }
+    Booking {
+        int id PK
+        int user_id FK
+        int room_id FK
+        date check_in
+        date check_out
+        int total_price
     }
 ```
