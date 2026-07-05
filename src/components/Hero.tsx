@@ -30,7 +30,7 @@ export default function Hero({ headline, subheadline, ctaText, ctaLink, image }:
           </div>
         </div>
         {image && (
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-1000 delay-200 aspect-[4/3] md:aspect-auto h-full min-h-[300px] md:min-h-[400px] group">
+          <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-1000 delay-200 aspect-[4/3] md:aspect-auto md:h-full md:min-h-[400px] group">
             <img 
               src={image} 
               alt={headline} 
