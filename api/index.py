@@ -23,13 +23,9 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"message": "An unexpected error occurred.", "details": str(exc)},
     )
 
-import_error = None
-try:
-    from sqlalchemy.orm import Session
-    from database import engine, get_db
-    import models
-except Exception as e:
-    import_error = traceback.format_exc()
+from sqlalchemy.orm import Session
+from api.database import engine, get_db
+from api import models
 
 # Models (Pydantic for validation/responses)
 class RoomBase(BaseModel):
@@ -55,22 +51,8 @@ class Room(RoomBase):
 
 # 1. GET list of all items
 @app.get("/api/rooms", response_model=List[Room], status_code=status.HTTP_200_OK)
-def get_rooms():
-    if import_error:
-        return [
-            {
-                "id": 1,
-                "name": "FATAL IMPORT ERROR",
-                "price": 9999,
-                "is_available": False,
-                "description": import_error
-            }
-        ]
-    
-    # Normally we would use db: Session = Depends(get_db)
-    # But we can't because get_db might not be imported!
+def get_rooms(db: Session = Depends(get_db)):
     try:
-        db = next(get_db())
         models.Base.metadata.create_all(bind=engine)
         if db.query(models.RoomModel).count() == 0:
             db.add_all([
