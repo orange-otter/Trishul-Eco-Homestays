@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Link } from 'react-router-dom';
 import { MessageCircle, Camera, Mail, Globe } from 'lucide-react';
 import { Button, Input } from './ui';

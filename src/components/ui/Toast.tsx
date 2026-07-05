@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Toaster as HotToaster, toast as hotToast } from 'react-hot-toast';
 
 export const Toaster = () => {
