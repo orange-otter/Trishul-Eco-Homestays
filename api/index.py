@@ -1,8 +1,16 @@
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional
+from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from database import engine, get_db
+import models
+
+load_dotenv()
+
+# We will initialize DB inside the first request instead of global scope to prevent Vercel crashes
 
 app = FastAPI(title="Trishul Eco-Homestays API")
 
@@ -46,14 +54,14 @@ class Room(RoomBase):
 
 # 1. GET list of all items
 @app.get("/api/rooms", response_model=List[Room], status_code=status.HTTP_200_OK)
-def get_rooms():
+def get_rooms(db: Session = Depends(get_db)):
     return [
         {
             "id": 1,
             "name": "Testing Connection Homestay",
             "price": 9999,
             "is_available": True,
-            "description": "If you see this, the Vercel app is running successfully and the crash is entirely database related."
+            "description": "If you see this, the Vercel app is running successfully."
         }
     ]
 
