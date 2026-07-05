@@ -132,6 +132,39 @@ export default function AdminDashboard() {
     }));
   };
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-[70vh] py-32 px-6 max-w-[500px] mx-auto flex flex-col items-center justify-center animate-in fade-in duration-700">
+        <h1 className="text-3xl font-bold font-serif text-primary-hover dark:text-primary-light mb-6">Admin Login</h1>
+        <form 
+          className="w-full flex flex-col gap-4 bg-surface dark:bg-gray-900 p-8 rounded-2xl border border-border dark:border-gray-800 shadow-sm"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (passwordInput === 'admin.homestay.4321') {
+              setIsAuthenticated(true);
+              toast.success('Access granted');
+            } else {
+              toast.error('Incorrect password');
+            }
+          }}
+        >
+          <p className="text-text-secondary text-sm text-center mb-2">Please enter the admin password to access the CRUD operations.</p>
+          <Input 
+            type="password" 
+            placeholder="Enter admin password" 
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            required
+          />
+          <Button type="submit" className="w-full">Access Dashboard</Button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[70vh] py-16 px-6 max-w-[1200px] mx-auto animate-in fade-in duration-700">
       <div className="flex justify-between items-center mb-8 border-b border-border dark:border-gray-800 pb-6">

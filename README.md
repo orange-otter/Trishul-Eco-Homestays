@@ -18,6 +18,11 @@ The platform connects conscious travelers with local village communities, offeri
 
 ## Getting Started
 
+### Admin Dashboard (CRUD Operations)
+The platform includes an Admin Dashboard for managing homestays (Create, Read, Update, Delete).
+- **Access**: Navigate to `/admin` in the browser (e.g. `http://localhost:8000/admin` or `https://[your-vercel-url].vercel.app/admin`).
+- **Password**: `admin.homestay.4321`
+
 ### Frontend Setup
 
 To run the frontend project locally:
