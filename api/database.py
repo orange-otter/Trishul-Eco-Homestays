@@ -7,9 +7,8 @@ from dotenv import load_dotenv
 # Try to load .env from the current directory
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./dummy.db"
-# Strip accidental quotes that users might copy-paste into Vercel
-DATABASE_URL = DATABASE_URL.strip('"').strip("'")
+# The user provided the URL directly, so we will use it instead of relying on Vercel Env Vars
+DATABASE_URL = "postgresql://postgres.mlkblvegideqoirezuwb:qiX1zFXKCyy2dK28@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
 
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
