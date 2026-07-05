@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -9,6 +9,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import { Toaster } from './components/ui/Toast';
 
 function App() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+
   return (
     <div className="flex flex-col min-h-screen bg-background dark:bg-gray-950 transition-colors duration-300">
       <Navbar />
@@ -22,7 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
         </Routes>
       </main>
-      <Footer />
+      {!isAdminPage && <Footer />}
       <Toaster />
     </div>
   );
