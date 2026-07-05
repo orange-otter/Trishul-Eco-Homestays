@@ -26,5 +26,7 @@ dist-ssr
 # Backend and Environment
 .env
 backend/venv/
+api/venv/
+.vercel/
 __pycache__/
 *.pyc
