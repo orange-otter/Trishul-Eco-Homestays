@@ -10,8 +10,7 @@ import models
 
 load_dotenv()
 
-# Create tables if they don't exist
-models.Base.metadata.create_all(bind=engine)
+# We will initialize DB inside the first request instead of global scope to prevent Vercel crashes
 
 app = FastAPI(title="Trishul Eco-Homestays API")
 
@@ -56,6 +55,11 @@ class Room(RoomBase):
 # 1. GET list of all items
 @app.get("/api/rooms", response_model=List[Room], status_code=status.HTTP_200_OK)
 def get_rooms(db: Session = Depends(get_db)):
+    try:
+        models.Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+        
     rooms = db.query(models.RoomModel).all()
     return rooms
 

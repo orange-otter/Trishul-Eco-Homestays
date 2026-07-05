@@ -7,9 +7,7 @@ from dotenv import load_dotenv
 # Try to load .env from the current directory
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable is not set")
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./dummy.db"
 
 # Supabase specific: when using SQLAlchemy, it's recommended to disable the connection pool
 # if running in serverless environments, or to use the pooler. Supabase provides a pooler URL
