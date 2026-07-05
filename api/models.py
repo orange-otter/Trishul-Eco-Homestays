@@ -20,6 +20,7 @@ class RoomModel(Base):
     price = Column(Integer)
     is_available = Column(Boolean, default=True)
     description = Column(String, nullable=True)
+    image_url = Column(String, nullable=True)
 
     bookings = relationship("BookingModel", back_populates="room")
 

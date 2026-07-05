@@ -33,6 +33,7 @@ class RoomBase(BaseModel):
     price: int
     is_available: bool = True
     description: Optional[str] = None
+    image_url: Optional[str] = None
 
 class RoomCreate(RoomBase):
     pass
@@ -42,6 +43,7 @@ class RoomUpdate(BaseModel):
     price: Optional[int] = None
     is_available: Optional[bool] = None
     description: Optional[str] = None
+    image_url: Optional[str] = None
 
 class Room(RoomBase):
     id: int

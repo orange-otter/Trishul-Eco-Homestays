@@ -92,7 +92,7 @@ export default function Dashboard() {
                   key={stay.id}
                   title={stay.name}
                   description={stay.description || "A wonderful homestay in Chopta."}
-                  image={"https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
+                  image={stay.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
                   actionText={`Book for ₹${stay.price}`}
                   actionLink={`/dashboard`}
                 />
