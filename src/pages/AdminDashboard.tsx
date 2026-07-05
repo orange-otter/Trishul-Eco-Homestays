@@ -5,7 +5,7 @@ import { Pencil, Trash2, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 interface Room {
-  id: int;
+  id: number;
   name: string;
   price: number;
   description: string;
