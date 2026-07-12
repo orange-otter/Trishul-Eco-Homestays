@@ -13,7 +13,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleBook = (roomId: number) => {
+  const handleBook = (_roomId: number) => {
     if (!user) {
       toast.error('Please log in to book a homestay');
       navigate('/login');
