@@ -101,26 +101,38 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to create homestay');
+        return res.json();
+      })
       .then(() => {
         toast.success("Homestay created successfully");
         setIsModalOpen(false);
         fetchRooms();
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        toast.error("Failed to create homestay");
+      });
     } else {
       fetch(`/api/rooms/${editingId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to update homestay');
+        return res.json();
+      })
       .then(() => {
         toast.success("Homestay updated successfully");
         setIsModalOpen(false);
         fetchRooms();
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        toast.error("Failed to update homestay");
+      });
     }
   };
 

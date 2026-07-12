@@ -67,7 +67,52 @@ def get_rooms(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
 
-# (Skipping the rest of the routes for this debug step since they would crash if models is undefined)
+# 2. POST create a new room
+@app.post("/api/rooms", response_model=Room, status_code=status.HTTP_201_CREATED)
+def create_room(room: RoomCreate, db: Session = Depends(get_db)):
+    try:
+        new_room = models.RoomModel(**room.model_dump())
+        db.add(new_room)
+        db.commit()
+        db.refresh(new_room)
+        return new_room
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
+# 3. PATCH update a room
+@app.patch("/api/rooms/{room_id}", response_model=Room)
+def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db)):
+    db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
+    if not db_room:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
+    update_data = room_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_room, key, value)
+        
+    try:
+        db.commit()
+        db.refresh(db_room)
+        return db_room
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
+# 4. DELETE a room
+@app.delete("/api/rooms/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_room(room_id: int, db: Session = Depends(get_db)):
+    db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
+    if not db_room:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
+    try:
+        db.delete(db_room)
+        db.commit()
+        return None
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
