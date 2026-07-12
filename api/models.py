@@ -9,6 +9,9 @@ class UserModel(Base):
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     is_admin = Column(Boolean, default=False)
+    hashed_password = Column(String, nullable=True)
+    auth_provider = Column(String, default="local")
+    oauth_id = Column(String, nullable=True)
     
     bookings = relationship("BookingModel", back_populates="user")
 

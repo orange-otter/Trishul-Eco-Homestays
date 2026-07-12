@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard';
 import About from './pages/About';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import OAuthCallback from './pages/OAuthCallback';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { Toaster } from './components/ui/Toast';
 
 function App() {
@@ -20,9 +22,15 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/homestays" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            {/* The Book/Checkout route will go here once implemented. We'll protect dashboard booking action later. */}
+          </Route>
         </Routes>
       </main>
       {!isAdminPage && <Footer />}

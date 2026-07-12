@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User, Menu, X, Sun, Moon } from 'lucide-react';
+import { User, Menu, X, Sun, Moon, LogOut } from 'lucide-react';
 import { Button } from './ui';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -54,9 +56,21 @@ export default function Navbar() {
             <Button variant="outline" size="sm">
               BOOK NOW
             </Button>
-            <Link to="/login" className="text-text-primary dark:text-gray-200 hover:text-secondary dark:hover:text-secondary transition-colors">
-              <User size={24} />
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-4">
+                {user.is_admin && (
+                  <Link to="/admin" className="text-sm font-semibold text-primary hover:text-secondary">Admin</Link>
+                )}
+                <span className="text-sm font-medium text-text-secondary">{user.name}</span>
+                <button onClick={logout} className="text-text-primary dark:text-gray-200 hover:text-secondary dark:hover:text-secondary transition-colors" title="Logout">
+                  <LogOut size={20} />
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="text-text-primary dark:text-gray-200 hover:text-secondary dark:hover:text-secondary transition-colors" title="Login">
+                <User size={24} />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -94,9 +108,22 @@ export default function Navbar() {
             ))}
           </ul>
           <div className="pt-4 border-t border-border dark:border-gray-800 flex flex-col gap-4">
-            <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 font-semibold text-text-secondary dark:text-gray-400">
-              <User size={20} /> Login / Profile
-            </Link>
+            {user ? (
+              <>
+                {user.is_admin && (
+                  <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 font-semibold text-text-secondary dark:text-gray-400">
+                    <User size={20} /> Admin Dashboard
+                  </Link>
+                )}
+                <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 font-semibold text-red-500">
+                  <LogOut size={20} /> Logout ({user.name})
+                </button>
+              </>
+            ) : (
+              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 font-semibold text-text-secondary dark:text-gray-400">
+                <User size={20} /> Login / Register
+              </Link>
+            )}
             <Button variant="primary" className="w-full">
               BOOK NOW
             </Button>

@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
 import { Calendar, MapPin, Star } from 'lucide-react';
 import { Button } from '../components/ui';
 import { Loader } from '../components/ui/Loader';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
-
   const [rooms, setRooms] = useState<any[]>([]);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleBook = (roomId: number) => {
+    if (!user) {
+      toast.error('Please log in to book a homestay');
+      navigate('/login');
+    } else {
+      toast.success('Booking functionality coming soon!');
+      // navigate(`/book/${roomId}`);
+    }
+  };
 
   useEffect(() => {
     fetch('/api/rooms')
@@ -94,7 +108,7 @@ export default function Dashboard() {
                   description={stay.description || "A wonderful homestay in Chopta."}
                   image={stay.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
                   actionText={`Book for ₹${stay.price}`}
-                  actionLink={`/dashboard`}
+                  onAction={() => handleBook(stay.id)}
                 />
               ))}
             </div>

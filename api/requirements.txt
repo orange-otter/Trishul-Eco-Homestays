@@ -4,3 +4,8 @@ pydantic
 python-dotenv
 sqlalchemy
 pg8000
+passlib[bcrypt]
+PyJWT
+python-multipart
+slowapi
+httpx

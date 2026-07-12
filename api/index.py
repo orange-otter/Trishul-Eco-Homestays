@@ -5,8 +5,13 @@ from pydantic import BaseModel
 from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Trishul Eco-Homestays API")
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from api.limiter import limiter
 
+app = FastAPI(title="Trishul Eco-Homestays API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,6 +31,9 @@ async def global_exception_handler(request: Request, exc: Exception):
 from sqlalchemy.orm import Session
 from api.database import engine, get_db
 from api import models
+from api.auth import router as auth_router, get_current_user
+
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 
 # Models (Pydantic for validation/responses)
 class RoomBase(BaseModel):
@@ -69,7 +77,7 @@ def get_rooms(db: Session = Depends(get_db)):
 
 # 2. POST create a new room
 @app.post("/api/rooms", response_model=Room, status_code=status.HTTP_201_CREATED)
-def create_room(room: RoomCreate, db: Session = Depends(get_db)):
+def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
     try:
         new_room = models.RoomModel(**room.model_dump())
         db.add(new_room)
@@ -82,7 +90,7 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)):
 
 # 3. PATCH update a room
 @app.patch("/api/rooms/{room_id}", response_model=Room)
-def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db)):
+def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
     db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not db_room:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -101,7 +109,7 @@ def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get
 
 # 4. DELETE a room
 @app.delete("/api/rooms/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_room(room_id: int, db: Session = Depends(get_db)):
+def delete_room(room_id: int, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
     db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not db_room:
         raise HTTPException(status_code=404, detail="Room not found")

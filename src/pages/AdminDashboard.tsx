@@ -3,6 +3,7 @@ import { Button, Input, Modal } from '../components/ui';
 import { Loader } from '../components/ui/Loader';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Room {
   id: number;
@@ -14,6 +15,7 @@ interface Room {
 }
 
 export default function AdminDashboard() {
+  const { token } = useAuth();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -33,7 +35,11 @@ export default function AdminDashboard() {
 
   const fetchRooms = () => {
     setIsLoading(true);
-    fetch('/api/rooms')
+    fetch('/api/rooms', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((res) => res.json())
       .then((data) => {
         setRooms(data);
@@ -79,6 +85,9 @@ export default function AdminDashboard() {
     if (window.confirm("Are you sure you want to delete this homestay? This action cannot be undone.")) {
       fetch(`/api/rooms/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
       .then((res) => {
         if (res.ok) {
@@ -98,7 +107,10 @@ export default function AdminDashboard() {
     if (modalMode === 'create') {
       fetch('/api/rooms', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData),
       })
       .then(res => {
@@ -117,7 +129,10 @@ export default function AdminDashboard() {
     } else {
       fetch(`/api/rooms/${editingId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData),
       })
       .then(res => {
@@ -143,39 +158,6 @@ export default function AdminDashboard() {
       [name]: name === 'price' ? parseInt(value) || 0 : value
     }));
   };
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-[70vh] py-32 px-6 max-w-[500px] mx-auto flex flex-col items-center justify-center animate-in fade-in duration-700">
-        <h1 className="text-3xl font-bold font-serif text-primary-hover dark:text-primary-light mb-6">Admin Login</h1>
-        <form 
-          className="w-full flex flex-col gap-4 bg-surface dark:bg-gray-900 p-8 rounded-2xl border border-border dark:border-gray-800 shadow-sm"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (passwordInput === 'admin.homestay.4321') {
-              setIsAuthenticated(true);
-              toast.success('Access granted');
-            } else {
-              toast.error('Incorrect password');
-            }
-          }}
-        >
-          <p className="text-text-secondary text-sm text-center mb-2">Please enter the admin password to access the CRUD operations.</p>
-          <Input 
-            type="password" 
-            placeholder="Enter admin password" 
-            value={passwordInput}
-            onChange={(e) => setPasswordInput(e.target.value)}
-            required
-          />
-          <Button type="submit" className="w-full">Access Dashboard</Button>
-        </form>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-[70vh] py-16 px-6 max-w-[1200px] mx-auto animate-in fade-in duration-700">
