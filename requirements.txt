@@ -4,8 +4,7 @@ pydantic
 python-dotenv
 sqlalchemy
 pg8000
-passlib[bcrypt]
-bcrypt<4.0.0
+bcrypt
 PyJWT
 python-multipart
 slowapi
