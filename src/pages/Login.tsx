@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Button, Input } from '../components/ui';
-import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,34 +10,35 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const url = isLogin ? '/api/auth/login' : '/api/auth/register';
-    const body = isLogin 
-      ? { email, password } 
-      : { name, email, password };
-
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.detail || 'Authentication failed');
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        toast.success('Successfully logged in!');
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name: name,
+            }
+          }
+        });
+        if (error) throw error;
+        toast.success('Account created! You can now log in.');
       }
-
-      login(data.access_token);
-      toast.success(isLogin ? 'Successfully logged in!' : 'Account created successfully!');
-      navigate('/');
+      
+      if (isLogin) navigate('/');
     } catch (err: any) {
       toast.error(err.message || 'An error occurred');
     } finally {
@@ -45,12 +46,22 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/login/google';
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+      if (error) throw error;
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to login with Google');
+    }
   };
 
-  const handleGithubLogin = () => {
-    window.location.href = '/api/auth/login/github';
+  const handleGithubLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
+      if (error) throw error;
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to login with GitHub');
+    }
   };
 
   return (

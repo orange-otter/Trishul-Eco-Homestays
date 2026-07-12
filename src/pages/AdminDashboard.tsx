@@ -15,7 +15,8 @@ interface Room {
 }
 
 export default function AdminDashboard() {
-  const { token } = useAuth();
+  const { session } = useAuth();
+  const token = session?.access_token;
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
