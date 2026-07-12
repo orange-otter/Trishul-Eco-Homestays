@@ -3,7 +3,9 @@ import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-import bcrypt
+import hashlib
+import os
+import binascii
 import jwt
 from pydantic import BaseModel, EmailStr
 from typing import Optional
@@ -44,18 +46,23 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
-def verify_password(plain_password, hashed_password):
-    if not hashed_password:
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    if not hashed_password or len(hashed_password) < 64:
         return False
     try:
-        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+        salt = hashed_password[:64].encode('ascii')
+        stored_password = hashed_password[64:]
+        pwdhash = hashlib.pbkdf2_hmac('sha512', plain_password.encode('utf-8'), salt, 100000)
+        pwdhash = binascii.hexlify(pwdhash).decode('ascii')
+        return pwdhash == stored_password
     except Exception:
         return False
 
-def get_password_hash(password):
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
+def get_password_hash(password: str) -> str:
+    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
+    pwdhash = binascii.hexlify(pwdhash)
+    return (salt + pwdhash).decode('ascii')
 
 def create_access_token(data: dict, expires_delta: Optional[datetime.timedelta] = None):
     to_encode = data.copy()
