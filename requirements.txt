@@ -5,7 +5,9 @@ python-dotenv
 sqlalchemy
 pg8000
 passlib[bcrypt]
+bcrypt
 PyJWT
 python-multipart
 slowapi
 httpx
+email-validator
