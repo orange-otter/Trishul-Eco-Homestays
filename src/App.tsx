@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import About from './pages/About';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import Profile from './pages/Profile';
 import OAuthCallback from './pages/OAuthCallback';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Toaster } from './components/ui/Toast';
@@ -29,6 +30,7 @@ function App() {
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/profile" element={<Profile />} />
             {/* The Book/Checkout route will go here once implemented. We'll protect dashboard booking action later. */}
           </Route>
         </Routes>

@@ -61,7 +61,9 @@ export default function Navbar() {
                 {user.is_admin && (
                   <Link to="/admin" className="text-sm font-semibold text-primary hover:text-secondary">Admin</Link>
                 )}
-                <span className="text-sm font-medium text-text-secondary">{user.user_metadata?.name || user.email}</span>
+                <Link to="/profile" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
+                  {user.user_metadata?.name || user.email}
+                </Link>
                 <button onClick={logout} className="text-text-primary dark:text-gray-200 hover:text-secondary dark:hover:text-secondary transition-colors" title="Logout">
                   <LogOut size={20} />
                 </button>
@@ -115,6 +117,9 @@ export default function Navbar() {
                     <User size={20} /> Admin Dashboard
                   </Link>
                 )}
+                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 font-semibold text-text-secondary dark:text-gray-400">
+                  <User size={20} /> My Profile
+                </Link>
                 <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 font-semibold text-red-500">
                   <LogOut size={20} /> Logout ({user.user_metadata?.name || user.email})
                 </button>
