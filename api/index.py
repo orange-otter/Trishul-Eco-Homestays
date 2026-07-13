@@ -34,10 +34,16 @@ from api import models
 import os
 import httpx
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Header
 
 security = HTTPBearer()
 SUPABASE_URL = os.environ.get("VITE_SUPABASE_URL")
 SUPABASE_ANON_KEY = os.environ.get("VITE_SUPABASE_ANON_KEY")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "secret")
+
+def verify_admin(x_admin_password: str = Header(None)):
+    if x_admin_password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid admin password")
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if not SUPABASE_URL or not SUPABASE_ANON_KEY:
@@ -104,7 +110,7 @@ def get_rooms(db: Session = Depends(get_db)):
 
 # 2. POST create a new room
 @app.post("/api/rooms", response_model=Room, status_code=status.HTTP_201_CREATED)
-def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user), admin_auth: None = Depends(verify_admin)):
     try:
         new_room = models.RoomModel(**room.model_dump())
         db.add(new_room)
@@ -117,7 +123,7 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: d
 
 # 3. PATCH update a room
 @app.patch("/api/rooms/{room_id}", response_model=Room)
-def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user), admin_auth: None = Depends(verify_admin)):
     db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not db_room:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -136,7 +142,7 @@ def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get
 
 # 4. DELETE a room
 @app.delete("/api/rooms/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_room(room_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def delete_room(room_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user), admin_auth: None = Depends(verify_admin)):
     db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not db_room:
         raise HTTPException(status_code=404, detail="Room not found")

@@ -18,7 +18,9 @@ export default function AdminDashboard() {
   const { session } = useAuth();
   const token = session?.access_token;
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // don't load initially until password is typed
+  const [adminPassword, setAdminPassword] = useState('');
+  const [isAuthenticatedAdmin, setIsAuthenticatedAdmin] = useState(false);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,8 +56,17 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchRooms();
-  }, []);
+    if (isAuthenticatedAdmin) {
+      fetchRooms();
+    }
+  }, [isAuthenticatedAdmin]);
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminPassword.trim().length > 0) {
+      setIsAuthenticatedAdmin(true);
+    }
+  };
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -87,7 +98,8 @@ export default function AdminDashboard() {
       fetch(`/api/rooms/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'X-Admin-Password': adminPassword
         }
       })
       .then((res) => {
@@ -110,7 +122,8 @@ export default function AdminDashboard() {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'X-Admin-Password': adminPassword
         },
         body: JSON.stringify(formData),
       })
@@ -132,7 +145,8 @@ export default function AdminDashboard() {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'X-Admin-Password': adminPassword
         },
         body: JSON.stringify(formData),
       })
@@ -159,6 +173,28 @@ export default function AdminDashboard() {
       [name]: name === 'price' ? parseInt(value) || 0 : value
     }));
   };
+
+  if (!isAuthenticatedAdmin) {
+    return (
+      <div className="min-h-[70vh] flex flex-col justify-center items-center px-4 animate-in fade-in">
+        <div className="bg-surface dark:bg-gray-900 p-8 rounded-2xl shadow-md border border-border dark:border-gray-800 max-w-md w-full">
+          <h2 className="text-2xl font-bold font-serif text-primary-hover dark:text-primary-light text-center mb-6">
+            Admin Authentication Required
+          </h2>
+          <form onSubmit={handleAdminLogin} className="flex flex-col gap-4">
+            <Input 
+              type="password" 
+              placeholder="Enter Master Admin Password" 
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              required
+            />
+            <Button type="submit" className="w-full">Access Dashboard</Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[70vh] py-16 px-6 max-w-[1200px] mx-auto animate-in fade-in duration-700">
