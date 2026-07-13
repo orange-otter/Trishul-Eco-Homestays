@@ -48,7 +48,12 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+      const { error } = await supabase.auth.signInWithOAuth({ 
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
       if (error) throw error;
     } catch (err: any) {
       toast.error(err.message || 'Failed to login with Google');
@@ -57,7 +62,12 @@ export default function Login() {
 
   const handleGithubLogin = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
+      const { error } = await supabase.auth.signInWithOAuth({ 
+        provider: 'github',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
       if (error) throw error;
     } catch (err: any) {
       toast.error(err.message || 'Failed to login with GitHub');

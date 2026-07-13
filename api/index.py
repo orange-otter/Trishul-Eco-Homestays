@@ -31,9 +31,31 @@ async def global_exception_handler(request: Request, exc: Exception):
 from sqlalchemy.orm import Session
 from api.database import engine, get_db
 from api import models
-from api.auth import router as auth_router, get_current_user
+import os
+import jwt
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+security = HTTPBearer()
+SUPABASE_JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "super-secret-jwt-token-with-at-least-32-characters-long")
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        payload = jwt.decode(
+            credentials.credentials,
+            SUPABASE_JWT_SECRET,
+            algorithms=["HS256"],
+            options={"verify_aud": False}
+        )
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        return {"id": user_id, "email": payload.get("email")}
+    except jwt.PyJWTError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Could not validate credentials: {str(e)}",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
 # Models (Pydantic for validation/responses)
 class RoomBase(BaseModel):
@@ -77,7 +99,7 @@ def get_rooms(db: Session = Depends(get_db)):
 
 # 2. POST create a new room
 @app.post("/api/rooms", response_model=Room, status_code=status.HTTP_201_CREATED)
-def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     try:
         new_room = models.RoomModel(**room.model_dump())
         db.add(new_room)
@@ -90,7 +112,7 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db), current_user: m
 
 # 3. PATCH update a room
 @app.patch("/api/rooms/{room_id}", response_model=Room)
-def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not db_room:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -109,7 +131,7 @@ def update_room(room_id: int, room_update: RoomUpdate, db: Session = Depends(get
 
 # 4. DELETE a room
 @app.delete("/api/rooms/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_room(room_id: int, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+def delete_room(room_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     db_room = db.query(models.RoomModel).filter(models.RoomModel.id == room_id).first()
     if not db_room:
         raise HTTPException(status_code=404, detail="Room not found")
