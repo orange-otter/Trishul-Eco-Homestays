@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/**/*.py": {
+      "excludeFiles": "{node_modules/**,src/**,public/**,dist/**,package-lock.json,tsconfig*.json,eslint.config.js,vite.config.ts,*.md,*.json,test_*.py,**/test_*.py}"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
