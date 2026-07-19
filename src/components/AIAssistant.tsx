@@ -101,9 +101,20 @@ export const AIAssistant: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
+  const itineraryChips = [
+    "3 Days in Chopta",
+    "Weekend Hiking & Local Food",
+    "5-Day Nature Escape"
+  ];
+
+  const recommendationChips = [
+    "Quiet cabin in the woods",
+    "Luxury dome with mountain view",
+    "Traditional organic farm stay"
+  ];
+
+  const triggerAI = async (promptText: string, type: 'itinerary' | 'recommendation') => {
+    if (!promptText.trim()) return;
 
     setLoading(true);
     setResult(null);
@@ -112,7 +123,7 @@ export const AIAssistant: React.FC = () => {
       const response = await fetch('/api/ai/assist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task_type: taskType, prompt })
+        body: JSON.stringify({ task_type: type, prompt: promptText })
       });
 
       if (!response.ok) {
@@ -127,6 +138,16 @@ export const AIAssistant: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    triggerAI(prompt, taskType);
+  };
+
+  const handleChipClick = (chipText: string) => {
+    setPrompt(chipText);
+    triggerAI(chipText, taskType);
   };
 
   return (
@@ -171,49 +192,69 @@ export const AIAssistant: React.FC = () => {
         </button>
       </div>
 
-      {/* Interactive Form */}
+      {/* Interactive Form with Suggestions and Horizontal Input Bar */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <label className="block text-sm font-bold tracking-wide text-stone-600 dark:text-stone-300 uppercase">
+        <div className="space-y-3">
+          <label className="block text-xs font-bold tracking-wider text-stone-550 dark:text-stone-400 uppercase">
             {taskType === 'itinerary' 
               ? "How many days and what are your interests?" 
               : "What is your ideal vacation vibe?"}
           </label>
-          <Input
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder={taskType === 'itinerary' 
-              ? "e.g., 3 days, hiking and local food" 
-              : "e.g., quiet, remote, sustainable"}
-            disabled={loading}
-            className="w-full bg-white dark:bg-gray-900 border border-stone-200 dark:border-gray-800 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/20 rounded-xl transition-all duration-300"
-          />
+          
+          {/* Quick-Click Suggestion Chips */}
+          <div className="flex flex-wrap gap-2">
+            {(taskType === 'itinerary' ? itineraryChips : recommendationChips).map((chip) => (
+              <button
+                key={chip}
+                type="button"
+                onClick={() => handleChipClick(chip)}
+                className="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer border transition-all duration-200 bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-gray-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:text-emerald-800 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-800"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+
+          {/* Input & Action console */}
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            <div className="flex-grow">
+              <Input
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder={taskType === 'itinerary' 
+                  ? "e.g., 3 days, hiking and local food" 
+                  : "e.g., quiet, remote, sustainable"}
+                disabled={loading}
+                className="w-full bg-white dark:bg-gray-900 border border-stone-200 dark:border-gray-800 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/20 rounded-xl transition-all duration-300"
+              />
+            </div>
+            
+            <button 
+              type="submit" 
+              disabled={loading || !prompt.trim()} 
+              className={`sm:w-auto px-6 py-3.5 rounded-xl text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 border-none cursor-pointer whitespace-nowrap ${
+                loading || !prompt.trim()
+                  ? 'bg-stone-100 text-stone-400 dark:bg-gray-800 dark:text-stone-500 cursor-not-allowed'
+                  : 'bg-emerald-700 text-white hover:bg-emerald-800 hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md dark:bg-emerald-600 dark:hover:bg-emerald-700'
+              }`}
+            >
+              {loading ? (
+                <span className="flex items-center gap-2 justify-center">
+                  <Loader size="sm" className="text-current animate-spin" />
+                  Crafting...
+                </span>
+              ) : (
+                "Ask Assistant"
+              )}
+            </button>
+          </div>
         </div>
-        
-        <button 
-          type="submit" 
-          disabled={loading || !prompt.trim()} 
-          className={`w-full py-3.5 rounded-xl text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 border-none cursor-pointer ${
-            loading || !prompt.trim()
-              ? 'bg-stone-100 text-stone-400 dark:bg-gray-800 dark:text-stone-550 cursor-not-allowed'
-              : 'bg-emerald-700 text-white hover:bg-emerald-800 hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md dark:bg-emerald-600 dark:hover:bg-emerald-700'
-          }`}
-        >
-          {loading ? (
-            <span className="flex items-center gap-2 justify-center">
-              <Loader size="sm" className="text-current animate-spin" />
-              Crafting Response...
-            </span>
-          ) : (
-            "Ask Assistant"
-          )}
-        </button>
       </form>
 
       {/* Response Box */}
       {result && (
         <div className="mt-6 p-6 bg-stone-50 dark:bg-gray-950 rounded-xl border border-stone-200 dark:border-gray-800 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-stone-200 dark:border-gray-800">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-stone-200/50 dark:border-gray-800">
             <Bot className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <h3 className="font-bold text-stone-700 dark:text-stone-300 text-xs uppercase tracking-widest font-serif">
               {taskType === 'itinerary' ? 'Your Curated Itinerary' : 'Homestay Recommendation'}
