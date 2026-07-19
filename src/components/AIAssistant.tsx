@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Input, Loader, toast } from './ui';
+import { Input, Loader, toast } from './ui';
 import { Bot, Map, Home } from 'lucide-react';
 
 const parseInline = (text: string): React.ReactNode[] => {
@@ -191,13 +191,13 @@ export const AIAssistant: React.FC = () => {
           />
         </div>
         
-        <Button 
+        <button 
           type="submit" 
           disabled={loading || !prompt.trim()} 
-          className={`w-full py-3.5 rounded-xl text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm cursor-pointer ${
+          className={`w-full py-3.5 rounded-xl text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 border-none cursor-pointer ${
             loading || !prompt.trim()
-              ? 'bg-stone-100 text-stone-400 cursor-not-allowed dark:bg-gray-800 dark:text-stone-600 shadow-none'
-              : 'bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700'
+              ? 'bg-stone-100 text-stone-400 cursor-not-allowed dark:bg-gray-800 dark:text-stone-600'
+              : 'bg-emerald-700 text-white hover:bg-emerald-800 hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md dark:bg-emerald-600 dark:hover:bg-emerald-700'
           }`}
         >
           {loading ? (
@@ -208,7 +208,7 @@ export const AIAssistant: React.FC = () => {
           ) : (
             "Ask Concierge"
           )}
-        </Button>
+        </button>
       </form>
 
       {/* Response Box (Clean, Flat border design with slide-in animation) */}
