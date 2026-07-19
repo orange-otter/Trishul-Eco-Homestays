@@ -36,7 +36,7 @@ const renderMarkdown = (content: string) => {
   const flushList = () => {
     if (currentList.length > 0) {
       renderedElements.push(
-        <ul key={`ul-${listKey++}`} className="list-disc pl-6 my-4 space-y-2 text-stone-700 dark:text-stone-300 text-base md:text-lg">
+        <ul key={`ul-${listKey++}`} className="list-disc pl-6 my-4 space-y-2 text-stone-700 dark:text-stone-350 text-base md:text-lg">
           {currentList}
         </ul>
       );
@@ -51,21 +51,21 @@ const renderMarkdown = (content: string) => {
     if (trimmed.startsWith('# ')) {
       flushList();
       renderedElements.push(
-        <h1 key={`h1-${i}`} className="text-2xl md:text-3xl font-bold text-green-800 dark:text-green-400 mt-6 mb-4 font-serif leading-tight">
+        <h1 key={`h1-${i}`} className="text-2xl md:text-3xl font-bold text-emerald-850 dark:text-emerald-450 mt-6 mb-4 font-serif leading-tight">
           {parseInline(trimmed.slice(2))}
         </h1>
       );
     } else if (trimmed.startsWith('## ')) {
       flushList();
       renderedElements.push(
-        <h2 key={`h2-${i}`} className="text-xl md:text-2xl font-bold text-stone-800 dark:text-stone-100 mt-6 mb-3 font-serif border-b border-stone-200 dark:border-stone-800 pb-2 leading-snug">
+        <h2 key={`h2-${i}`} className="text-xl md:text-2xl font-bold text-stone-850 dark:text-stone-100 mt-6 mb-3 font-serif border-b border-emerald-900/5 dark:border-emerald-500/5 pb-2 leading-snug">
           {parseInline(trimmed.slice(3))}
         </h2>
       );
     } else if (trimmed.startsWith('### ')) {
       flushList();
       renderedElements.push(
-        <h3 key={`h3-${i}`} className="text-lg md:text-xl font-bold text-stone-850 dark:text-stone-250 mt-5 mb-2 leading-snug">
+        <h3 key={`h3-${i}`} className="text-lg md:text-xl font-bold text-stone-800 dark:text-stone-250 mt-5 mb-2 leading-snug">
           {parseInline(trimmed.slice(4))}
         </h3>
       );
@@ -130,42 +130,52 @@ export const AIAssistant: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-      <div className="flex items-center gap-2 mb-6">
-        <Bot className="w-6 h-6 text-green-600" />
-        <h2 className="text-xl font-bold text-stone-800">Eco-Assistant</h2>
+    <div className="bg-gradient-to-br from-stone-50/90 via-white to-emerald-50/20 dark:from-gray-900/90 dark:via-gray-900 dark:to-emerald-950/10 p-8 rounded-3xl border border-emerald-900/10 dark:border-emerald-500/10 shadow-[0_15px_40px_rgba(4,120,87,0.03)] hover:shadow-[0_15px_40px_rgba(4,120,87,0.06)] transition-all duration-500 backdrop-blur-md">
+      
+      {/* Header with Glowing indicator */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/20 shadow-inner">
+          <Bot className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-900 animate-pulse" />
+        </div>
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold font-serif text-stone-850 dark:text-white tracking-wide">Trishul AI Concierge</h2>
+          <p className="text-xs text-stone-500 dark:text-stone-400 tracking-wider uppercase font-semibold">Your Personal Himalayan Guide</p>
+        </div>
       </div>
 
-      <div className="flex gap-4 mb-6">
+      {/* Segmented Control Pill Switcher */}
+      <div className="p-1 bg-stone-105 dark:bg-gray-800/80 rounded-2xl flex gap-1 mb-8 max-w-md border border-stone-200/50 dark:border-gray-700/50 shadow-inner">
         <button
           type="button"
           onClick={() => setTaskType('itinerary')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-medium transition-colors ${
-            taskType === 'itinerary' 
-              ? 'bg-green-100 text-green-800 border-2 border-green-500' 
-              : 'bg-stone-50 text-stone-600 border-2 border-transparent hover:bg-stone-100'
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+            taskType === 'itinerary'
+              ? 'bg-white dark:bg-gray-700 text-emerald-800 dark:text-emerald-300 shadow-sm transform scale-[1.01]'
+              : 'text-stone-500 dark:text-stone-400 hover:text-stone-750 dark:hover:text-stone-200'
           }`}
         >
-          <Map className="w-4 h-4" />
+          <Map className={`w-4 h-4 transition-transform duration-300 ${taskType === 'itinerary' ? 'rotate-3 scale-110' : ''}`} />
           Plan Itinerary
         </button>
         <button
           type="button"
           onClick={() => setTaskType('recommendation')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-medium transition-colors ${
-            taskType === 'recommendation' 
-              ? 'bg-green-100 text-green-800 border-2 border-green-500' 
-              : 'bg-stone-50 text-stone-600 border-2 border-transparent hover:bg-stone-100'
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+            taskType === 'recommendation'
+              ? 'bg-white dark:bg-gray-700 text-emerald-800 dark:text-emerald-300 shadow-sm transform scale-[1.01]'
+              : 'text-stone-500 dark:text-stone-400 hover:text-stone-750 dark:hover:text-stone-200'
           }`}
         >
-          <Home className="w-4 h-4" />
+          <Home className={`w-4 h-4 transition-transform duration-300 ${taskType === 'recommendation' ? 'rotate-3 scale-110' : ''}`} />
           Get Recommendation
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1">
+      {/* Interactive Form */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-bold tracking-wide text-stone-700 dark:text-stone-300 uppercase">
             {taskType === 'itinerary' 
               ? "How many days and what are your interests?" 
               : "What is your ideal vacation vibe?"}
@@ -177,30 +187,40 @@ export const AIAssistant: React.FC = () => {
               ? "e.g., 3 days, hiking and local food" 
               : "e.g., quiet, remote, sustainable"}
             disabled={loading}
+            className="w-full bg-white/60 dark:bg-gray-900/60 border border-stone-200 dark:border-gray-800 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl transition-all duration-300"
           />
         </div>
         
-        <Button type="submit" disabled={loading || !prompt.trim()} className="w-full">
+        <Button 
+          type="submit" 
+          disabled={loading || !prompt.trim()} 
+          className={`w-full py-4 rounded-2xl text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer ${
+            loading || !prompt.trim()
+              ? 'bg-stone-200 text-stone-400 cursor-not-allowed dark:bg-gray-800 dark:text-stone-600 shadow-none'
+              : 'bg-gradient-to-r from-emerald-700 to-green-800 text-white hover:from-emerald-800 hover:to-green-900 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 shadow-emerald-700/10 dark:shadow-emerald-950/20'
+          }`}
+        >
           {loading ? (
             <span className="flex items-center gap-2 justify-center">
-              <Loader size="sm" />
-              Thinking...
+              <Loader size="sm" className="text-current" />
+              Crafting Response...
             </span>
           ) : (
-            "Ask Assistant"
+            "Consult AI Concierge"
           )}
         </Button>
       </form>
 
+      {/* Parchment styled response container */}
       {result && (
-        <div className="mt-8 p-6 md:p-8 bg-stone-50/50 dark:bg-stone-900/50 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-md">
-          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-stone-200 dark:border-stone-800">
-            <Bot className="w-6 h-6 text-green-600 dark:text-green-400" />
-            <h3 className="font-bold text-stone-800 dark:text-stone-100 text-base uppercase tracking-wider font-serif">
+        <div className="mt-8 p-6 md:p-8 bg-gradient-to-br from-emerald-50/20 via-stone-50/40 to-emerald-50/10 dark:from-emerald-950/5 dark:via-gray-900/40 dark:to-emerald-950/10 rounded-3xl border border-emerald-900/10 dark:border-emerald-500/10 shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700">
+          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-emerald-900/5 dark:border-emerald-500/10">
+            <Bot className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <h3 className="font-bold text-emerald-850 dark:text-emerald-350 text-sm uppercase tracking-widest font-serif">
               {taskType === 'itinerary' ? 'Your Curated Itinerary' : 'Homestay Recommendation'}
             </h3>
           </div>
-          <div className="text-stone-700 dark:text-stone-200">
+          <div className="text-stone-800 dark:text-stone-200">
             {renderMarkdown(result)}
           </div>
         </div>
