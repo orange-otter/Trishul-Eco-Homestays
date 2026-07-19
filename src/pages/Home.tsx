@@ -25,25 +25,25 @@ export default function Home() {
                 description="A traditional stone and wood house offering panoramic views of the Trishul peaks. Includes home-cooked organic meals."
                 image="/images/himalayan_home_1782036868366.png"
                 actionText="View Details"
-                actionLink="/dashboard"
+                actionLink="/dashboard?select=Himalayan Heritage Home"
               />
             </div>
             <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 fill-mode-both">
               <Card 
-                title="Forest Edge Retreat"
-                description="Located near the Kedarnath Wildlife Sanctuary border. Perfect for bird watchers and nature enthusiasts."
+                title="Chopta Eco Retreat"
+                description="Nestled in the lush meadows of Chopta, this retreat offers panoramic views of the Trishul peak and runs entirely on solar power."
                 image="/images/forest_retreat_1782036881847.png"
                 actionText="View Details"
-                actionLink="/dashboard"
+                actionLink="/dashboard?select=Chopta Eco Retreat"
               />
             </div>
             <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 fill-mode-both">
               <Card 
-                title="Village Community Stay"
-                description="Immerse yourself in local culture. Participate in farming, traditional cooking, and village walks."
+                title="Garhwal Valley Homestay"
+                description="A traditional home run by local village village women. Learn Garhwali cooking, participate in organic farming, and explore remote mountain paths."
                 image="/images/village_stay_1782036896920.png"
                 actionText="View Details"
-                actionLink="/dashboard"
+                actionLink="/dashboard?select=Garhwal Valley"
               />
             </div>
           </div>

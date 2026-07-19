@@ -6,10 +6,12 @@ import { Loader } from '../components/ui/Loader';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 import { AIAssistant } from '../components/AIAssistant';
+import { X } from 'lucide-react';
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [rooms, setRooms] = useState<any[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -29,6 +31,18 @@ export default function Dashboard() {
       .then((data) => {
         setRooms(data);
         setIsLoading(false);
+
+        // Check for URL select parameter
+        const searchParams = new URLSearchParams(window.location.search);
+        const selectParam = searchParams.get('select');
+        if (selectParam && data.length > 0) {
+          const found = data.find((r: any) => 
+            r.name.toLowerCase().includes(selectParam.toLowerCase())
+          );
+          if (found) {
+            setSelectedRoom(found);
+          }
+        }
       })
       .catch((err) => {
         console.error("Failed to fetch rooms:", err);
@@ -75,15 +89,98 @@ export default function Dashboard() {
                   title={stay.name}
                   description={stay.description || "A wonderful homestay in Chopta."}
                   image={stay.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
-                  actionText={`Book for ₹${stay.price}`}
-                  onAction={() => handleBook(stay.id)}
+                  actionText="View Details & Book"
+                  onAction={() => setSelectedRoom(stay)}
                 />
               ))}
             </div>
           </section>
         </div>
       )}
+
+      {/* Homestay Detail Modal Box */}
+      {selectedRoom && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden max-w-2xl w-full border border-stone-200 dark:border-gray-800 shadow-2xl relative flex flex-col animate-in fade-in zoom-in duration-300">
+            {/* Close Button */}
+            <button 
+              onClick={() => setSelectedRoom(null)}
+              className="absolute top-4 right-4 text-stone-500 hover:text-stone-850 dark:text-stone-400 dark:hover:text-white p-2 bg-white/80 dark:bg-gray-800/80 rounded-full backdrop-blur-md transition-colors cursor-pointer border-none z-10"
+              aria-label="Close details"
+            >
+              <X size={20} />
+            </button>
+
+            {/* Modal Image */}
+            <div className="h-64 md:h-80 w-full overflow-hidden">
+              <img 
+                src={selectedRoom.image_url} 
+                alt={selectedRoom.name} 
+                className="w-full h-full object-cover" 
+              />
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 md:p-8 flex flex-col gap-4">
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-hover dark:text-primary-light">
+                {selectedRoom.name}
+              </h2>
+              
+              <div className="flex justify-between items-center text-lg">
+                <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                  ₹{selectedRoom.price} / night
+                </span>
+                <span className={`text-sm px-3 py-1 rounded-full font-medium ${
+                  selectedRoom.is_available 
+                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400' 
+                    : 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-400'
+                }`}>
+                  {selectedRoom.is_available ? 'Available' : 'Sold Out'}
+                </span>
+              </div>
+
+              <p className="text-text-secondary dark:text-gray-400 leading-relaxed text-base md:text-lg">
+                {selectedRoom.description}
+              </p>
+
+              {/* Extra Details / Amenities */}
+              <div className="mt-2 border-t border-stone-100 dark:border-gray-800 pt-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-450 mb-2">Features & Amenities</h4>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">100% Eco-Friendly</span>
+                  <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">Organic Meals Included</span>
+                  <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">Local Guided Treks</span>
+                  <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">Solar Powered</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4 mt-6">
+                <button 
+                  onClick={() => setSelectedRoom(null)}
+                  className="flex-1 py-3 px-6 rounded-xl border border-stone-300 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-semibold hover:bg-stone-50 dark:hover:bg-gray-850 transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+                <button 
+                  onClick={() => {
+                    setSelectedRoom(null);
+                    handleBook(selectedRoom.id);
+                  }}
+                  disabled={!selectedRoom.is_available}
+                  className={`flex-1 py-3 px-6 rounded-xl font-bold tracking-wide transition-all duration-300 border-none cursor-pointer text-center text-white ${
+                    selectedRoom.is_available
+                      ? 'bg-emerald-700 hover:bg-emerald-800 hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md dark:bg-emerald-600 dark:hover:bg-emerald-700'
+                      : 'bg-stone-300 cursor-not-allowed dark:bg-gray-800 dark:text-stone-550'
+                  }`}
+                >
+                  Book Stay Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-

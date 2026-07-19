@@ -36,7 +36,7 @@ const renderMarkdown = (content: string) => {
   const flushList = () => {
     if (currentList.length > 0) {
       renderedElements.push(
-        <ul key={`ul-${listKey++}`} className="list-disc pl-6 my-4 space-y-2 text-stone-700 dark:text-stone-300 text-base md:text-lg">
+        <ul key={`ul-${listKey++}`} className="list-disc pl-6 my-4 space-y-2 text-stone-700 dark:text-stone-300 text-base md:text-lg animate-in fade-in duration-300">
           {currentList}
         </ul>
       );
@@ -51,7 +51,7 @@ const renderMarkdown = (content: string) => {
     if (trimmed.startsWith('# ')) {
       flushList();
       renderedElements.push(
-        <h1 key={`h1-${i}`} className="text-2xl md:text-3xl font-bold text-emerald-800 dark:text-emerald-455 mt-6 mb-4 font-serif leading-tight">
+        <h1 key={`h1-${i}`} className="text-2xl md:text-3xl font-bold text-emerald-800 dark:text-emerald-400 mt-6 mb-4 font-serif leading-tight">
           {parseInline(trimmed.slice(2))}
         </h1>
       );
@@ -65,7 +65,7 @@ const renderMarkdown = (content: string) => {
     } else if (trimmed.startsWith('### ')) {
       flushList();
       renderedElements.push(
-        <h3 key={`h3-${i}`} className="text-lg md:text-xl font-bold text-stone-800 dark:text-stone-200 mt-5 mb-2 leading-snug">
+        <h3 key={`h3-${i}`} className="text-lg md:text-xl font-bold text-stone-850 dark:text-stone-200 mt-5 mb-2 leading-snug">
           {parseInline(trimmed.slice(4))}
         </h3>
       );
@@ -195,7 +195,7 @@ export const AIAssistant: React.FC = () => {
           disabled={loading || !prompt.trim()} 
           className={`w-full py-3.5 rounded-xl text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 border-none cursor-pointer ${
             loading || !prompt.trim()
-              ? 'bg-stone-100 text-stone-400 dark:bg-gray-800 dark:text-stone-500 cursor-not-allowed'
+              ? 'bg-stone-100 text-stone-400 dark:bg-gray-800 dark:text-stone-550 cursor-not-allowed'
               : 'bg-emerald-700 text-white hover:bg-emerald-800 hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md dark:bg-emerald-600 dark:hover:bg-emerald-700'
           }`}
         >
@@ -212,14 +212,14 @@ export const AIAssistant: React.FC = () => {
 
       {/* Response Box */}
       {result && (
-        <div className="mt-6 p-6 bg-stone-50 dark:bg-gray-950/40 rounded-xl border border-stone-200 dark:border-gray-800 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-stone-200/50 dark:border-gray-800">
+        <div className="mt-6 p-6 bg-stone-50 dark:bg-gray-950 rounded-xl border border-stone-200 dark:border-gray-800 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-stone-200 dark:border-gray-800">
             <Bot className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <h3 className="font-bold text-stone-700 dark:text-stone-300 text-xs uppercase tracking-widest font-serif">
               {taskType === 'itinerary' ? 'Your Curated Itinerary' : 'Homestay Recommendation'}
             </h3>
           </div>
-          <div className="text-stone-900 dark:text-stone-250">
+          <div className="text-stone-900 dark:text-stone-200">
             {renderMarkdown(result)}
           </div>
         </div>
