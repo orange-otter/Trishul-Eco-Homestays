@@ -57,18 +57,18 @@ export default function Dashboard() {
           <Loader size="lg" className="text-primary" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start animate-in fade-in duration-1000">
-          {/* Left Column: AI Assistant */}
-          <div className="lg:col-span-1 lg:sticky lg:top-24">
+        <div className="flex flex-col gap-12 animate-in fade-in duration-1000">
+          {/* Top Section: AI Assistant */}
+          <section className="w-full">
             <AIAssistant />
-          </div>
+          </section>
           
-          {/* Right Column: Discover */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
+          {/* Bottom Section: Recommended Homestays (expanded to 3 columns) */}
+          <section className="flex flex-col gap-6">
             <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
               Recommended for You
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {rooms.map((stay) => (
                 <Card 
                   key={stay.id}
@@ -80,7 +80,7 @@ export default function Dashboard() {
                 />
               ))}
             </div>
-          </div>
+          </section>
         </div>
       )}
     </div>
