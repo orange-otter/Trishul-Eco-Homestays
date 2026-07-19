@@ -6,6 +6,7 @@ import { Button } from '../components/ui';
 import { Loader } from '../components/ui/Loader';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
+import { AIAssistant } from '../components/AIAssistant';
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -57,9 +58,14 @@ export default function Dashboard() {
           <Loader size="lg" className="text-primary" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in duration-1000">
-          {/* Left Column: Upcoming Bookings */}
-          <div className="lg:col-span-1 flex flex-col gap-6">
+        <div className="flex flex-col gap-12 animate-in fade-in duration-1000">
+          <section>
+            <AIAssistant />
+          </section>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+            {/* Left Column: Upcoming Bookings */}
+            <div className="lg:col-span-1 flex flex-col gap-6 lg:sticky lg:top-24">
             <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light flex items-center gap-2">
               <Calendar className="text-secondary" /> Upcoming Stays
             </h3>
@@ -112,9 +118,11 @@ export default function Dashboard() {
                 />
               ))}
             </div>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
 }
+

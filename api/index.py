@@ -32,14 +32,23 @@ from sqlalchemy.orm import Session
 from api.database import engine, get_db
 from api import models
 import os
+from dotenv import load_dotenv
+load_dotenv("api/.env")
+
 import httpx
+import google.generativeai as genai
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Header
+
 
 security = HTTPBearer()
 SUPABASE_URL = os.environ.get("VITE_SUPABASE_URL")
 SUPABASE_ANON_KEY = os.environ.get("VITE_SUPABASE_ANON_KEY")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "secret")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 def verify_admin(x_admin_password: str = Header(None)):
     if x_admin_password != ADMIN_PASSWORD:
@@ -154,6 +163,32 @@ def delete_room(room_id: int, db: Session = Depends(get_db), current_user: dict 
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
+class AIAssistRequest(BaseModel):
+    task_type: str
+    prompt: str
+
+@app.post("/api/ai/assist")
+def ai_assist(request: AIAssistRequest):
+    if not GEMINI_API_KEY:
+        raise HTTPException(status_code=500, detail="Gemini API Key is missing")
+    
+    try:
+        model = genai.GenerativeModel("gemini-3.5-flash")
+        
+        if request.task_type == "itinerary":
+            system_prompt = "You are an expert travel planner for Trishul Eco-Homestays. Create a detailed, day-by-day itinerary based on the user's request. Format it nicely using markdown."
+        elif request.task_type == "recommendation":
+            system_prompt = "You are a helpful homestay recommender for Trishul Eco-Homestays. Recommend the best homestay from our list (Himalayan Heritage Home, Chopta Eco Retreat) based on the user's preferences, and write a custom pitch. Format it nicely in markdown."
+        else:
+            raise HTTPException(status_code=400, detail="Invalid task_type. Must be 'itinerary' or 'recommendation'")
+            
+        full_prompt = f"{system_prompt}\n\nUser Request: {request.prompt}"
+        response = model.generate_content(full_prompt)
+        
+        return {"result": response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

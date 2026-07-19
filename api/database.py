@@ -4,30 +4,30 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import os
+from dotenv import load_dotenv
+
+# Securely load env variables from api/.env for local development
+load_dotenv("api/.env")
 
 # Securely load the URL from the Vercel Environment Variables
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if not DATABASE_URL:
-    # Temporary fallback so the Admin Dashboard works immediately for your screenshots
-    # Obfuscated to prevent GitGuardian from screaming again
-    p1 = "postgresql://postgres.mlkblvegideqoirezuwb"
-    p2 = "qiX1zFXKCyy2dK28"
-    p3 = "@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
-    DATABASE_URL = f"{p1}:{p2}{p3}"
+engine = None
+SessionLocal = None
 
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
-elif DATABASE_URL.startswith("postgresql://"):
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
+if DATABASE_URL:
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
+    elif DATABASE_URL.startswith("postgresql://"):
+        DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
 
-# Initialize Engine globally, but lazily connect
-try:
-    engine = create_engine(DATABASE_URL, pool_pre_ping=True)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-except Exception as e:
-    engine = None
-    SessionLocal = None
+    # Initialize Engine globally, but lazily connect
+    try:
+        engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    except Exception as e:
+        engine = None
+        SessionLocal = None
 
 # Supabase specific: when using SQLAlchemy, it's recommended to disable the connection pool
 # if running in serverless environments, or to use the pooler. Supabase provides a pooler URL

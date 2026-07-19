@@ -1,0 +1,183 @@
+{
+  "info": {
+    "name": "Trishul Eco-Homestays Auth API",
+    "description": "Postman collection for Deliverable 3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Register User (Supabase)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{SUPABASE_ANON_KEY}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"postman_test@example.com\",\n    \"password\": \"securepassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{SUPABASE_URL}}/auth/v1/signup",
+          "host": [
+            "{{SUPABASE_URL}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "signup"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Login User (Supabase)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.access_token) {",
+              "    pm.environment.set(\"JWT\", jsonData.access_token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{SUPABASE_ANON_KEY}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"postman_test@example.com\",\n    \"password\": \"securepassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{SUPABASE_URL}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{SUPABASE_URL}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Create Homestay (Protected)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{JWT}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Admin-Password",
+            "value": "{{ADMIN_PASSWORD}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Postman Test Villa\",\n    \"price\": 5000,\n    \"description\": \"Created via Postman!\",\n    \"image_url\": \"\",\n    \"is_available\": true\n}"
+        },
+        "url": {
+          "raw": "{{API_URL}}/api/rooms",
+          "host": [
+            "{{API_URL}}"
+          ],
+          "path": [
+            "api",
+            "rooms"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Delete Homestay (Protected)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{JWT}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Admin-Password",
+            "value": "{{ADMIN_PASSWORD}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{API_URL}}/api/rooms/999",
+          "host": [
+            "{{API_URL}}"
+          ],
+          "path": [
+            "api",
+            "rooms",
+            "999"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "SUPABASE_URL",
+      "value": "https://mlkblvegideqoirezuwb.supabase.co"
+    },
+    {
+      "key": "SUPABASE_ANON_KEY",
+      "value": "paste_your_anon_key_here"
+    },
+    {
+      "key": "API_URL",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "ADMIN_PASSWORD",
+      "value": "secret"
+    },
+    {
+      "key": "JWT",
+      "value": ""
+    }
+  ]
+}
