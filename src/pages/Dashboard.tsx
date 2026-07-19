@@ -58,47 +58,46 @@ export default function Dashboard() {
           <Loader size="lg" className="text-primary" />
         </div>
       ) : (
-        <div className="flex flex-col gap-12 animate-in fade-in duration-1000">
-          <section>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start animate-in fade-in duration-1000">
+          {/* Left Column: Upcoming Bookings & AI Assistant */}
+          <div className="lg:col-span-1 flex flex-col gap-8 lg:sticky lg:top-24">
+            <div className="flex flex-col gap-6">
+              <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light flex items-center gap-2">
+                <Calendar className="text-secondary" /> Upcoming Stays
+              </h3>
+              
+              <div className="bg-surface dark:bg-gray-900 rounded-2xl p-6 border border-border dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h4 className="font-bold text-lg text-text-primary dark:text-white">Tungnath Trail House</h4>
+                    <p className="text-sm text-text-secondary dark:text-gray-400 flex items-center gap-1 mt-1">
+                      <MapPin size={14} /> Sari Village, Chopta
+                    </p>
+                  </div>
+                  <span className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light text-xs font-bold px-2 py-1 rounded-full">
+                    CONFIRMED
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm mb-6 bg-background dark:bg-gray-800 p-4 rounded-xl border border-border dark:border-gray-700">
+                  <div>
+                    <p className="text-text-secondary dark:text-gray-500 text-xs uppercase tracking-wider mb-1">Check-in</p>
+                    <p className="font-semibold dark:text-gray-200">Oct 12, 2026</p>
+                  </div>
+                  <div>
+                    <p className="text-text-secondary dark:text-gray-500 text-xs uppercase tracking-wider mb-1">Check-out</p>
+                    <p className="font-semibold dark:text-gray-200">Oct 15, 2026</p>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full justify-center">View Itinerary</Button>
+              </div>
+              
+              <div className="bg-surface dark:bg-gray-900 rounded-2xl p-8 border border-dashed border-border dark:border-gray-700 text-center flex flex-col items-center justify-center gap-3 opacity-70">
+                <Star className="text-gray-400" size={32} />
+                <p className="text-text-secondary dark:text-gray-400 font-medium">No other upcoming trips</p>
+              </div>
+            </div>
+
             <AIAssistant />
-          </section>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-            {/* Left Column: Upcoming Bookings */}
-            <div className="lg:col-span-1 flex flex-col gap-6 lg:sticky lg:top-24">
-            <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light flex items-center gap-2">
-              <Calendar className="text-secondary" /> Upcoming Stays
-            </h3>
-            
-            <div className="bg-surface dark:bg-gray-900 rounded-2xl p-6 border border-border dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h4 className="font-bold text-lg text-text-primary dark:text-white">Tungnath Trail House</h4>
-                  <p className="text-sm text-text-secondary dark:text-gray-400 flex items-center gap-1 mt-1">
-                    <MapPin size={14} /> Sari Village, Chopta
-                  </p>
-                </div>
-                <span className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light text-xs font-bold px-2 py-1 rounded-full">
-                  CONFIRMED
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-4 text-sm mb-6 bg-background dark:bg-gray-800 p-4 rounded-xl border border-border dark:border-gray-700">
-                <div>
-                  <p className="text-text-secondary dark:text-gray-500 text-xs uppercase tracking-wider mb-1">Check-in</p>
-                  <p className="font-semibold dark:text-gray-200">Oct 12, 2026</p>
-                </div>
-                <div>
-                  <p className="text-text-secondary dark:text-gray-500 text-xs uppercase tracking-wider mb-1">Check-out</p>
-                  <p className="font-semibold dark:text-gray-200">Oct 15, 2026</p>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full justify-center">View Itinerary</Button>
-            </div>
-            
-            <div className="bg-surface dark:bg-gray-900 rounded-2xl p-8 border border-dashed border-border dark:border-gray-700 text-center flex flex-col items-center justify-center gap-3 opacity-70">
-              <Star className="text-gray-400" size={32} />
-              <p className="text-text-secondary dark:text-gray-400 font-medium">No other upcoming trips</p>
-            </div>
           </div>
           
           {/* Right Column: Discover */}
@@ -117,7 +116,6 @@ export default function Dashboard() {
                   onAction={() => handleBook(stay.id)}
                 />
               ))}
-            </div>
             </div>
           </div>
         </div>

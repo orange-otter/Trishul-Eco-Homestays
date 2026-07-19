@@ -21,8 +21,8 @@ UNSPLASH_IDS = [
     "1520250497591-112f2f40a3f4",  # Eco valley lodge
     "1549693578-d683be217e58",  # Wooden treehouse
     "1518780664697-55e3ad937233",  # Cozy cabin in red wood
-    "1434082033009-b81d41d36e50",  # Mountain stream cottage
-    "1521401830884-6c03c1c87efa",  # A-frame cabin
+    "1470071459604-3b5ec3a7fe05",  # Mountain stream cottage
+    "1482862549707-f63cb32c5fd9",  # A-frame cabin
     "1618773928121-c32242e63f39",  # Warm cabin interior
     "1502672260266-1c1ef2d93688",  # Wooden deck in forest
     "1600585154340-be6161a56a0c",  # Luxury modern eco-villa
