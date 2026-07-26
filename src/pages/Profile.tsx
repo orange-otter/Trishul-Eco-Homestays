@@ -101,13 +101,13 @@ export default function Profile() {
                     description={`Check-in: ${booking.check_in} | Check-out: ${booking.check_out} | Total: ₹${booking.total_price}`}
                     image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
                   >
-                    <div className="flex gap-3 w-full">
+                    <div className="grid grid-cols-2 gap-3 w-full">
                       <button 
                         onClick={() => {
                           setManagingBooking(booking);
                           setManageMode('edit');
                         }}
-                        className="flex-1 py-1.5 text-primary font-semibold border border-primary/30 rounded-md hover:bg-primary/5 transition-colors text-xs"
+                        className="py-2.5 text-primary font-bold border-2 border-primary/20 rounded-xl hover:bg-primary/10 hover:border-primary/40 transition-all text-sm text-center shadow-sm"
                       >
                         Edit Dates
                       </button>
@@ -116,7 +116,7 @@ export default function Profile() {
                           setManagingBooking(booking);
                           setManageMode('cancel');
                         }}
-                        className="flex-1 py-1.5 text-red-500 font-semibold border border-red-500/30 rounded-md hover:bg-red-500/5 transition-colors text-xs"
+                        className="py-2.5 text-red-600 font-bold border-2 border-red-500/20 rounded-xl hover:bg-red-50 hover:border-red-500/40 dark:hover:bg-red-950/20 transition-all text-sm text-center shadow-sm"
                       >
                         Cancel Trip
                       </button>
