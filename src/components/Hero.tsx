@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { Button, MagneticButton, FadeUpReveal } from './ui';
+import { MagneticButton, FadeUpReveal } from './ui';
 
 interface HeroProps {
   headline: string;

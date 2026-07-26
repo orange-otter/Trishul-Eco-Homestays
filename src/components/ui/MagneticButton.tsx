@@ -1,6 +1,7 @@
-import { useRef, useState, ReactNode } from 'react';
+import { useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { Button, ButtonProps } from './Button';
+import { Button, type ButtonProps } from './Button';
 
 interface MagneticButtonProps extends ButtonProps {
   children: ReactNode;

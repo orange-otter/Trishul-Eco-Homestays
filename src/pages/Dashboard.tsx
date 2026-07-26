@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
-import { Button, FadeUpReveal, MagneticButton } from '../components/ui';
+import { FadeUpReveal, MagneticButton } from '../components/ui';
 import { Loader } from '../components/ui/Loader';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
