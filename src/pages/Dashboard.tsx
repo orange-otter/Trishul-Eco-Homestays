@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
-import { Button } from '../components/ui';
+import { Button, FadeUpReveal, MagneticButton } from '../components/ui';
 import { Loader } from '../components/ui/Loader';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -159,21 +159,27 @@ export default function Dashboard() {
     <div className="min-h-[60vh] py-16 md:py-24 px-6 max-w-[1200px] mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b border-border dark:border-gray-800 pb-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold font-serif text-primary-hover dark:text-primary-light mb-4 animate-in slide-in-from-bottom-4 duration-700">
-            Homestays Dashboard
-          </h1>
-          <p className="text-lg md:text-xl text-text-secondary dark:text-gray-400 max-w-[800px] leading-relaxed animate-in slide-in-from-bottom-4 duration-700 delay-150">
-            Welcome back, Traveler! Here are your upcoming trips and new eco-homestays to discover.
-          </p>
+          <FadeUpReveal delay={0.1}>
+            <h1 className="text-4xl md:text-5xl font-bold font-serif text-primary-hover dark:text-primary-light mb-4">
+              Homestays Dashboard
+            </h1>
+          </FadeUpReveal>
+          <FadeUpReveal delay={0.2}>
+            <p className="text-lg md:text-xl text-text-secondary dark:text-gray-400 max-w-[800px] leading-relaxed">
+              Welcome back, Traveler! Here are your upcoming trips and new eco-homestays to discover.
+            </p>
+          </FadeUpReveal>
         </div>
-        <Button 
-          className="mt-6 md:mt-0 shadow-lg shadow-primary/20"
-          onClick={() => {
-            document.getElementById('recommended-section')?.scrollIntoView({ behavior: 'smooth' });
-          }}
-        >
-          Book New Stay
-        </Button>
+        <FadeUpReveal delay={0.3}>
+          <MagneticButton 
+            className="mt-6 md:mt-0 shadow-lg shadow-primary/20"
+            onClick={() => {
+              document.getElementById('recommended-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Book New Stay
+          </MagneticButton>
+        </FadeUpReveal>
       </div>
       
       {isLoading ? (
@@ -181,51 +187,58 @@ export default function Dashboard() {
           <Loader size="lg" className="text-primary" />
         </div>
       ) : (
-        <div className="flex flex-col gap-12 animate-in fade-in duration-1000">
+        <div className="flex flex-col gap-12">
           {/* Top Section: AI Assistant */}
-          <section className="w-full">
-            <AIAssistant />
-          </section>
+          <FadeUpReveal delay={0.4}>
+            <section className="w-full">
+              <AIAssistant />
+            </section>
+          </FadeUpReveal>
           
           {/* Middle Section: User Bookings */}
           {bookings.length > 0 && (
-            <section className="flex flex-col gap-6">
-              <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
-                Your Upcoming Trips
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {bookings.map((booking) => {
-                  const room = rooms.find(r => r.id === booking.room_id);
-                  return (
-                    <Card 
-                      key={booking.id}
-                      title={room?.name || "Unknown Homestay"}
-                      description={`Check-in: ${booking.check_in} | Check-out: ${booking.check_out} | Total: ₹${booking.total_price}`}
-                      image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
-                      actionText="View Details"
-                      onAction={() => room && setSelectedRoom(room)}
-                    />
-                  );
-                })}
-              </div>
-            </section>
+            <FadeUpReveal delay={0.5}>
+              <section className="flex flex-col gap-6">
+                <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
+                  Your Upcoming Trips
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {bookings.map((booking) => {
+                    const room = rooms.find(r => r.id === booking.room_id);
+                    return (
+                      <Card 
+                        key={booking.id}
+                        title={room?.name || "Unknown Homestay"}
+                        description={`Check-in: ${booking.check_in} | Check-out: ${booking.check_out} | Total: ₹${booking.total_price}`}
+                        image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
+                        actionText="View Details"
+                        onAction={() => room && setSelectedRoom(room)}
+                      />
+                    );
+                  })}
+                </div>
+              </section>
+            </FadeUpReveal>
           )}
           
-          {/* Bottom Section: Recommended Homestays (expanded to 3 columns) */}
+          {/* Bottom Section: Recommended Homestays */}
           <section id="recommended-section" className="flex flex-col gap-6">
-            <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
-              Recommended for You
-            </h3>
+            <FadeUpReveal delay={0.2}>
+              <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
+                Recommended for You
+              </h3>
+            </FadeUpReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {rooms.map((stay) => (
-                <Card 
-                  key={stay.id}
-                  title={stay.name}
-                  description={stay.description || "A wonderful homestay in Chopta."}
-                  image={stay.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
-                  actionText="View Details & Book"
-                  onAction={() => setSelectedRoom(stay)}
-                />
+              {rooms.map((stay, i) => (
+                <FadeUpReveal key={stay.id} delay={0.1 * (i + 1)}>
+                  <Card 
+                    title={stay.name}
+                    description={stay.description || "A wonderful homestay in Chopta."}
+                    image={stay.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
+                    actionText="View Details & Book"
+                    onAction={() => setSelectedRoom(stay)}
+                  />
+                </FadeUpReveal>
               ))}
             </div>
           </section>

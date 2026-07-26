@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import OAuthCallback from './pages/OAuthCallback';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Toaster } from './components/ui/Toast';
+import { CustomCursor } from './components/ui';
 
 function App() {
   const location = useLocation();
@@ -17,6 +18,7 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background dark:bg-gray-950 transition-colors duration-300">
+      <CustomCursor />
       <Navbar />
       <main className="flex-grow">
         <Routes>
