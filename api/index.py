@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException, Request, status, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import date
 from fastapi.middleware.cors import CORSMiddleware
 
 from slowapi import _rate_limit_exceeded_handler
@@ -105,6 +106,22 @@ class Room(RoomBase):
     class Config:
         from_attributes = True
 
+class BookingBase(BaseModel):
+    room_id: int
+    check_in: date
+    check_out: date
+    total_price: int
+
+class BookingCreate(BookingBase):
+    pass
+
+class Booking(BookingBase):
+    id: int
+    user_id: str
+    
+    class Config:
+        from_attributes = True
+
 # 1. GET list of all items
 @app.get("/api/rooms", response_model=List[Room], status_code=status.HTTP_200_OK)
 def get_rooms(db: Session = Depends(get_db)):
@@ -164,6 +181,29 @@ def delete_room(room_id: int, db: Session = Depends(get_db), current_user: dict 
         db.delete(db_room)
         db.commit()
         return None
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
+# Bookings Endpoints
+@app.get("/api/bookings/me", response_model=List[Booking])
+def get_my_bookings(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    try:
+        user_id_str = str(current_user["id"])
+        bookings = db.query(models.BookingModel).filter(models.BookingModel.user_id == user_id_str).all()
+        return bookings
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
+@app.post("/api/bookings", response_model=Booking)
+def create_booking(booking: BookingCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    try:
+        user_id_str = str(current_user["id"])
+        new_booking = models.BookingModel(**booking.model_dump(), user_id=user_id_str)
+        db.add(new_booking)
+        db.commit()
+        db.refresh(new_booking)
+        return new_booking
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")

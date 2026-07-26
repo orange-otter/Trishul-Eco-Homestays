@@ -31,11 +31,10 @@ class BookingModel(Base):
     __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(String) # Changed to String to store Supabase UUID, removed FK for simplicity
     room_id = Column(Integer, ForeignKey("rooms.id"))
     check_in = Column(Date)
     check_out = Column(Date)
     total_price = Column(Integer)
 
-    user = relationship("UserModel", back_populates="bookings")
     room = relationship("RoomModel", back_populates="bookings")

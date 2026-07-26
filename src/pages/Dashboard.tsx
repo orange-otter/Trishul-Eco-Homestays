@@ -11,18 +11,62 @@ import { X } from 'lucide-react';
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [rooms, setRooms] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const navigate = useNavigate();
 
-  const handleBook = (_roomId: number) => {
+  const fetchBookings = () => {
+    if (!session?.access_token) return;
+    fetch('/api/bookings/me', {
+      headers: { 'Authorization': `Bearer ${session.access_token}` }
+    })
+      .then(res => res.json())
+      .then(data => setBookings(data))
+      .catch(err => console.error(err));
+  };
+
+  const handleBook = (roomId: number) => {
     if (!user) {
       toast.error('Please log in to book a homestay');
       navigate('/login');
-    } else {
-      toast.success('Booking functionality coming soon!');
-      // navigate(`/book/${roomId}`);
-    }
+      return;
+    } 
+    
+    const today = new Date();
+    const checkIn = new Date(today);
+    checkIn.setDate(checkIn.getDate() + 1);
+    const checkOut = new Date(today);
+    checkOut.setDate(checkOut.getDate() + 3);
+    
+    const room = rooms.find(r => r.id === roomId);
+    if (!room) return;
+
+    fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.access_token}`
+      },
+      body: JSON.stringify({
+        room_id: roomId,
+        check_in: checkIn.toISOString().split('T')[0],
+        check_out: checkOut.toISOString().split('T')[0],
+        total_price: room.price * 2
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to book");
+      return res.json();
+    })
+    .then(() => {
+      toast.success('Successfully booked homestay!');
+      fetchBookings();
+    })
+    .catch(err => {
+      console.error(err);
+      toast.error('Failed to book homestay.');
+    });
   };
 
   useEffect(() => {
@@ -48,7 +92,11 @@ export default function Dashboard() {
         console.error("Failed to fetch rooms:", err);
         setIsLoading(false);
       });
-  }, []);
+      
+    if (user && session?.access_token) {
+      fetchBookings();
+    }
+  }, [user, session]);
 
   return (
     <div className="min-h-[60vh] py-16 md:py-24 px-6 max-w-[1200px] mx-auto">
@@ -76,6 +124,30 @@ export default function Dashboard() {
           <section className="w-full">
             <AIAssistant />
           </section>
+          
+          {/* Middle Section: User Bookings */}
+          {bookings.length > 0 && (
+            <section className="flex flex-col gap-6">
+              <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
+                Your Upcoming Trips
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {bookings.map((booking) => {
+                  const room = rooms.find(r => r.id === booking.room_id);
+                  return (
+                    <Card 
+                      key={booking.id}
+                      title={room?.name || "Unknown Homestay"}
+                      description={`Check-in: ${booking.check_in} | Check-out: ${booking.check_out} | Total: ₹${booking.total_price}`}
+                      image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
+                      actionText="View Details"
+                      onAction={() => room && setSelectedRoom(room)}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          )}
           
           {/* Bottom Section: Recommended Homestays (expanded to 3 columns) */}
           <section className="flex flex-col gap-6">

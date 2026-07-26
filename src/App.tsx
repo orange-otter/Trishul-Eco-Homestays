@@ -21,14 +21,14 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/homestays" element={<Navigate to="/dashboard" replace />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/oauth/callback" element={<OAuthCallback />} />
           
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/homestays" element={<Navigate to="/dashboard" replace />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/profile" element={<Profile />} />
             {/* The Book/Checkout route will go here once implemented. We'll protect dashboard booking action later. */}
