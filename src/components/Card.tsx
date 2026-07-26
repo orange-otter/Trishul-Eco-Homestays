@@ -8,9 +8,10 @@ interface CardProps {
   actionText?: string;
   actionLink?: string;
   onAction?: () => void;
+  children?: React.ReactNode;
 }
 
-export default function Card({ title, description, image, actionText, actionLink, onAction }: CardProps) {
+export default function Card({ title, description, image, actionText, actionLink, onAction, children }: CardProps) {
   const CardImage = () => (
     <div className="overflow-hidden h-56">
       <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -48,17 +49,27 @@ export default function Card({ title, description, image, actionText, actionLink
 
         <p className="text-text-secondary dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">{description}</p>
         
-        {actionText && actionLink && !onAction && (
-          <Link to={actionLink} className="inline-flex items-center gap-2 text-primary dark:text-primary-light font-semibold hover:text-secondary dark:hover:text-white transition-colors mt-auto">
-            {actionText} <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-          </Link>
-        )}
-        
-        {actionText && onAction && (
-          <button onClick={onAction} className="inline-flex items-center gap-2 text-primary dark:text-primary-light font-semibold hover:text-secondary dark:hover:text-white transition-colors mt-auto cursor-pointer border-none bg-transparent p-0">
-            {actionText} <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-          </button>
-        )}
+        <div className="flex justify-between items-center mt-auto">
+          <div>
+            {actionText && actionLink && !onAction && (
+              <Link to={actionLink} className="inline-flex items-center gap-2 text-primary dark:text-primary-light font-semibold hover:text-secondary dark:hover:text-white transition-colors cursor-pointer">
+                {actionText} <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              </Link>
+            )}
+            
+            {actionText && onAction && (
+              <button onClick={onAction} className="inline-flex items-center gap-2 text-primary dark:text-primary-light font-semibold hover:text-secondary dark:hover:text-white transition-colors cursor-pointer border-none bg-transparent p-0">
+                {actionText} <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              </button>
+            )}
+          </div>
+          
+          {children && (
+            <div className="flex items-center">
+              {children}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

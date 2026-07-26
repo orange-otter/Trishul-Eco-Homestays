@@ -101,6 +101,24 @@ export default function Dashboard() {
     });
   };
 
+  const handleCancelBooking = (bookingId: number) => {
+    if (window.confirm("Are you sure you want to cancel this trip?")) {
+      fetch(`/api/bookings/${bookingId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${session?.access_token}` }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to cancel booking");
+        toast.success("Trip cancelled successfully");
+        fetchBookings();
+      })
+      .catch(err => {
+        console.error(err);
+        toast.error("Failed to cancel trip");
+      });
+    }
+  };
+
   useEffect(() => {
     const cachedRooms = sessionStorage.getItem('homestays_rooms');
     
@@ -213,7 +231,14 @@ export default function Dashboard() {
                         image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
                         actionText="View Details"
                         onAction={() => room && setSelectedRoom(room)}
-                      />
+                      >
+                        <button 
+                          onClick={() => handleCancelBooking(booking.id)}
+                          className="text-red-500 hover:text-red-700 dark:hover:text-red-400 font-semibold text-sm transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none p-0"
+                        >
+                          <X size={16} /> Cancel Trip
+                        </button>
+                      </Card>
                     );
                   })}
                 </div>

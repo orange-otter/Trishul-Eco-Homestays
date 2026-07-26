@@ -208,6 +208,45 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db), curren
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
 
+class BookingUpdate(BaseModel):
+    check_in: Optional[date] = None
+    check_out: Optional[date] = None
+    total_price: Optional[int] = None
+
+@app.patch("/api/bookings/{booking_id}", response_model=Booking)
+def update_booking(booking_id: int, booking_update: BookingUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_id_str = str(current_user["id"])
+    db_booking = db.query(models.BookingModel).filter(models.BookingModel.id == booking_id, models.BookingModel.user_id == user_id_str).first()
+    if not db_booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    update_data = booking_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_booking, key, value)
+        
+    try:
+        db.commit()
+        db.refresh(db_booking)
+        return db_booking
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
+@app.delete("/api/bookings/{booking_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_booking(booking_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_id_str = str(current_user["id"])
+    db_booking = db.query(models.BookingModel).filter(models.BookingModel.id == booking_id, models.BookingModel.user_id == user_id_str).first()
+    if not db_booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    try:
+        db.delete(db_booking)
+        db.commit()
+        return None
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
+
 class AIAssistRequest(BaseModel):
     task_type: str
     prompt: str
