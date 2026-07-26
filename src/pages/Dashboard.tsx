@@ -251,7 +251,7 @@ export default function Dashboard() {
           <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden max-w-[900px] w-full shadow-2xl relative flex flex-col md:flex-row animate-in fade-in zoom-in-95 duration-300 max-h-[95vh] md:max-h-[85vh]">
             
             {/* Modal Image */}
-            <div className="w-full md:w-1/2 h-64 md:h-auto relative shrink-0">
+            <div className="w-full md:w-5/12 h-56 md:h-auto relative shrink-0">
               <img 
                 src={selectedRoom.image_url} 
                 alt={selectedRoom.name} 
@@ -260,22 +260,22 @@ export default function Dashboard() {
             </div>
 
             {/* Modal Body */}
-            <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative overflow-y-auto">
+            <div className="w-full md:w-7/12 p-5 md:p-7 flex flex-col relative overflow-y-auto">
               {/* Close Button */}
               <button 
                 onClick={() => setSelectedRoom(null)}
-                className="absolute top-6 right-6 p-2 bg-stone-100 hover:bg-stone-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-stone-500 dark:text-stone-400 rounded-full transition-colors z-10"
+                className="absolute top-4 right-4 md:top-6 md:right-6 p-2 bg-stone-100 hover:bg-stone-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-stone-500 dark:text-stone-400 rounded-full transition-colors z-10"
                 aria-label="Close details"
               >
                 <X size={20} />
               </button>
 
               <div className="flex flex-col h-full">
-                <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary-hover dark:text-primary-light pr-12 mb-4 leading-tight mt-2 md:mt-0">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-hover dark:text-primary-light pr-12 mb-3 leading-tight mt-1 md:mt-0">
                   {selectedRoom.name}
                 </h2>
                 
-                <div className="flex flex-wrap items-center gap-4 mb-6">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
                   <span className="text-xl font-bold text-emerald-700 dark:text-emerald-400">
                     ₹{selectedRoom.price} <span className="text-sm text-stone-500 dark:text-stone-400 font-normal">/ night</span>
                   </span>
@@ -291,12 +291,12 @@ export default function Dashboard() {
                 {/* Extra Details / Amenities */}
                 {!isBookingStep ? (
                   <div className="flex flex-col flex-grow">
-                    <p className="text-text-secondary dark:text-gray-400 leading-relaxed text-base mb-8 flex-grow">
+                    <p className="text-text-secondary dark:text-gray-400 leading-relaxed text-[15px] mb-5 flex-grow">
                       {selectedRoom.description}
                     </p>
                     
-                    <div className="mb-8">
-                      <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-3">Features & Amenities</h4>
+                    <div className="mb-6">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-2.5">Features & Amenities</h4>
                       <div className="flex flex-wrap gap-2 text-sm font-medium">
                         <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-100 dark:border-gray-700">100% Eco-Friendly</span>
                         <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-100 dark:border-gray-700">Organic Meals</span>
@@ -306,10 +306,10 @@ export default function Dashboard() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-4 mt-auto pt-4 border-t border-stone-100 dark:border-gray-800">
+                    <div className="flex gap-3 mt-auto pt-4 border-t border-stone-100 dark:border-gray-800">
                       <button 
                         onClick={() => { setSelectedRoom(null); setIsBookingStep(false); }}
-                        className="flex-1 py-3.5 px-6 rounded-xl border-2 border-stone-200 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-bold hover:bg-stone-50 dark:hover:bg-gray-800 transition-colors"
+                        className="flex-1 py-3 px-5 rounded-xl border-2 border-stone-200 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-bold hover:bg-stone-50 dark:hover:bg-gray-800 transition-colors"
                       >
                         Cancel
                       </button>
@@ -323,7 +323,7 @@ export default function Dashboard() {
                           }
                         }}
                         disabled={!selectedRoom.is_available}
-                        className={`flex-[2] py-3.5 px-6 rounded-xl font-bold tracking-wide transition-all duration-300 text-center text-white ${
+                        className={`flex-[2] py-3 px-5 rounded-xl font-bold tracking-wide transition-all duration-300 text-center text-white ${
                           selectedRoom.is_available
                             ? 'bg-emerald-700 hover:bg-emerald-800 hover:-translate-y-0.5 shadow-lg shadow-emerald-900/20 dark:bg-emerald-600 dark:hover:bg-emerald-700'
                             : 'bg-stone-300 cursor-not-allowed dark:bg-gray-700 dark:text-stone-500'
@@ -335,49 +335,49 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="flex flex-col flex-grow">
-                    <div className="flex flex-col gap-5 flex-grow mb-8">
-                      <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-4 flex-grow mb-6">
+                      <div className="flex flex-col gap-1.5">
                         <label className="text-sm font-semibold text-stone-700 dark:text-stone-300">Check-in Date</label>
                         <input 
                           type="date" 
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
                           min={new Date().toISOString().split('T')[0]}
-                          className="p-3.5 rounded-xl border-2 border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-0 transition-colors"
+                          className="p-3 rounded-xl border-2 border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-0 transition-colors"
                         />
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-1.5">
                         <label className="text-sm font-semibold text-stone-700 dark:text-stone-300">Check-out Date</label>
                         <input 
                           type="date" 
                           value={checkOut}
                           onChange={(e) => setCheckOut(e.target.value)}
                           min={checkIn || new Date().toISOString().split('T')[0]}
-                          className="p-3.5 rounded-xl border-2 border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-0 transition-colors"
+                          className="p-3 rounded-xl border-2 border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-0 transition-colors"
                         />
                       </div>
                       
                       {checkIn && checkOut && new Date(checkOut) > new Date(checkIn) && (
-                        <div className="mt-4 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-xl flex justify-between items-center">
+                        <div className="mt-2 p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-xl flex justify-between items-center">
                           <span className="font-semibold text-stone-700 dark:text-stone-300">Total for Stay:</span>
-                          <span className="font-bold text-2xl text-emerald-700 dark:text-emerald-400">
+                          <span className="font-bold text-xl text-emerald-700 dark:text-emerald-400">
                             ₹{selectedRoom.price * Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))}
                           </span>
                         </div>
                       )}
                     </div>
                     
-                    <div className="flex gap-4 mt-auto pt-4 border-t border-stone-100 dark:border-gray-800">
+                    <div className="flex gap-3 mt-auto pt-4 border-t border-stone-100 dark:border-gray-800">
                       <button 
                         onClick={() => setIsBookingStep(false)}
-                        className="flex-1 py-3.5 px-6 rounded-xl border-2 border-stone-200 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-bold hover:bg-stone-50 dark:hover:bg-gray-800 transition-colors"
+                        className="flex-1 py-3 px-5 rounded-xl border-2 border-stone-200 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-bold hover:bg-stone-50 dark:hover:bg-gray-800 transition-colors"
                       >
                         Back
                       </button>
                       <button 
                         onClick={() => handleBook(selectedRoom.id)}
                         disabled={isSubmitting || !checkIn || !checkOut || new Date(checkOut) <= new Date(checkIn)}
-                        className={`flex-[2] py-3.5 px-6 rounded-xl font-bold transition-all duration-300 text-white ${
+                        className={`flex-[2] py-3 px-5 rounded-xl font-bold transition-all duration-300 text-white ${
                           !isSubmitting && checkIn && checkOut && new Date(checkOut) > new Date(checkIn)
                             ? 'bg-emerald-700 hover:bg-emerald-800 hover:-translate-y-0.5 shadow-lg shadow-emerald-900/20 dark:bg-emerald-600 dark:hover:bg-emerald-700'
                             : 'bg-stone-300 cursor-not-allowed dark:bg-gray-700 dark:text-stone-500'
