@@ -53,18 +53,20 @@ export default function Navbar() {
             >
               {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
             </button>
-            <Link to="/dashboard">
-              <Button variant="outline" size="sm">
-                BOOK NOW
-              </Button>
-            </Link>
+            {location.pathname !== '/dashboard' && location.pathname !== '/homestays' && (
+              <Link to="/dashboard">
+                <Button variant="outline" size="sm">
+                  BOOK NOW
+                </Button>
+              </Link>
+            )}
             {user ? (
               <div className="flex items-center gap-4">
                 {user.is_admin && (
                   <Link to="/admin" className="text-sm font-semibold text-primary hover:text-secondary">Admin</Link>
                 )}
-                <Link to="/profile" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
-                  {user.user_metadata?.name || user.email}
+                <Link to="/profile" className="text-text-primary dark:text-gray-200 hover:text-secondary dark:hover:text-secondary transition-colors" title="My Profile">
+                  <User size={24} />
                 </Link>
                 <button onClick={logout} className="text-text-primary dark:text-gray-200 hover:text-secondary dark:hover:text-secondary transition-colors" title="Logout">
                   <LogOut size={20} />
@@ -131,11 +133,13 @@ export default function Navbar() {
                 <User size={20} /> Login / Register
               </Link>
             )}
-            <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-              <Button variant="primary" className="w-full">
-                BOOK NOW
-              </Button>
-            </Link>
+            {location.pathname !== '/dashboard' && location.pathname !== '/homestays' && (
+              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                <Button variant="primary" className="w-full">
+                  BOOK NOW
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       )}
