@@ -235,7 +235,7 @@ export default function Dashboard() {
       {/* Homestay Detail Modal Box */}
       {selectedRoom && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden max-w-2xl w-full border border-stone-200 dark:border-gray-800 shadow-2xl relative flex flex-col animate-in fade-in zoom-in duration-300">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden max-w-2xl w-full max-h-[90vh] border border-stone-200 dark:border-gray-800 shadow-2xl relative flex flex-col animate-in fade-in zoom-in duration-300">
             {/* Close Button */}
             <button 
               onClick={() => setSelectedRoom(null)}
@@ -246,7 +246,7 @@ export default function Dashboard() {
             </button>
 
             {/* Modal Image */}
-            <div className="h-64 md:h-80 w-full overflow-hidden">
+            <div className="h-48 md:h-64 w-full flex-shrink-0 overflow-hidden">
               <img 
                 src={selectedRoom.image_url} 
                 alt={selectedRoom.name} 
@@ -255,8 +255,8 @@ export default function Dashboard() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 md:p-8 flex flex-col gap-4">
-              <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-hover dark:text-primary-light">
+            <div className="p-5 md:p-8 flex flex-col gap-4 overflow-y-auto">
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-hover dark:text-primary-light flex-shrink-0">
                 {selectedRoom.name}
               </h2>
               
