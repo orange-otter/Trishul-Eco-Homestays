@@ -21,9 +21,15 @@ export default function Dashboard() {
     fetch('/api/bookings/me', {
       headers: { 'Authorization': `Bearer ${session.access_token}` }
     })
-      .then(res => res.json())
-      .then(data => setBookings(data))
-      .catch(err => console.error(err));
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch bookings");
+        return res.json();
+      })
+      .then(data => setBookings(Array.isArray(data) ? data : []))
+      .catch(err => {
+        console.error(err);
+        setBookings([]);
+      });
   };
 
   const handleBook = (roomId: number) => {
@@ -71,16 +77,20 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetch('/api/rooms')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch rooms");
+        return res.json();
+      })
       .then((data) => {
-        setRooms(data);
+        const roomsData = Array.isArray(data) ? data : [];
+        setRooms(roomsData);
         setIsLoading(false);
 
         // Check for URL select parameter
         const searchParams = new URLSearchParams(window.location.search);
         const selectParam = searchParams.get('select');
-        if (selectParam && data.length > 0) {
-          const found = data.find((r: any) => 
+        if (selectParam && roomsData.length > 0) {
+          const found = roomsData.find((r: any) => 
             r.name.toLowerCase().includes(selectParam.toLowerCase())
           );
           if (found) {
@@ -90,6 +100,7 @@ export default function Dashboard() {
       })
       .catch((err) => {
         console.error("Failed to fetch rooms:", err);
+        setRooms([]);
         setIsLoading(false);
       });
       

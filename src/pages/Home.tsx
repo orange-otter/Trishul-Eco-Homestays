@@ -18,13 +18,17 @@ export default function Home() {
 
   useEffect(() => {
     fetch('/api/rooms')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then((data) => {
-        setRooms(data);
+        setRooms(Array.isArray(data) ? data : []);
         setIsLoading(false);
       })
       .catch((err) => {
         console.error("Failed to fetch rooms:", err);
+        setRooms([]);
         setIsLoading(false);
       });
   }, []);
