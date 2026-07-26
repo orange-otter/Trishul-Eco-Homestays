@@ -8,7 +8,7 @@ interface MagneticButtonProps extends ButtonProps {
   magneticStrength?: number;
 }
 
-export function MagneticButton({ children, className, magneticStrength = 0.3, ...props }: MagneticButtonProps) {
+export function MagneticButton({ children, className, magneticStrength = 0.15, ...props }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -32,7 +32,7 @@ export function MagneticButton({ children, className, magneticStrength = 0.3, ..
       onMouseMove={handleMouse}
       onMouseLeave={reset}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: 'spring', stiffness: 150, damping: 15, mass: 0.1 }}
+      transition={{ type: 'spring', stiffness: 150, damping: 25, mass: 0.1 }}
     >
       <Button className={className} {...props}>
         {children}
