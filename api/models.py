@@ -13,8 +13,7 @@ class UserModel(Base):
     auth_provider = Column(String, default="local")
     oauth_id = Column(String, nullable=True)
     
-    bookings = relationship("BookingModel", back_populates="user")
-
+    # bookings = relationship("BookingModel", back_populates="user")  # Removed because BookingModel no longer has a foreign key to UserModel
 class RoomModel(Base):
     __tablename__ = "rooms"
 
