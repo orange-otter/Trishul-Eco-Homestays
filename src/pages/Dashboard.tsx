@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 import { AIAssistant } from '../components/AIAssistant';
 import { X } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -79,6 +80,12 @@ export default function Dashboard() {
     })
     .then(() => {
       toast.success('Successfully booked homestay!');
+      confetti({
+        particleCount: 150,
+        spread: 90,
+        origin: { y: 0.6 },
+        colors: ['#059669', '#10b981', '#fbbf24', '#f59e0b']
+      });
       setSelectedRoom(null);
       setIsBookingStep(false);
       setCheckIn('');
