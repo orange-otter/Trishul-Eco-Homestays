@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [checkIn, setCheckIn] = useState<string>('');
   const [checkOut, setCheckOut] = useState<string>('');
   const [isBookingStep, setIsBookingStep] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, session } = useAuth();
   const navigate = useNavigate();
 
@@ -58,6 +59,7 @@ export default function Dashboard() {
       return;
     }
 
+    setIsSubmitting(true);
     fetch('/api/bookings', {
       method: 'POST',
       headers: { 
@@ -86,37 +88,60 @@ export default function Dashboard() {
     .catch(err => {
       console.error(err);
       toast.error('Failed to book homestay.');
+    })
+    .finally(() => {
+      setIsSubmitting(false);
     });
   };
 
   useEffect(() => {
-    fetch('/api/rooms')
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch rooms");
-        return res.json();
-      })
-      .then((data) => {
-        const roomsData = Array.isArray(data) ? data : [];
-        setRooms(roomsData);
-        setIsLoading(false);
-
-        // Check for URL select parameter
-        const searchParams = new URLSearchParams(window.location.search);
-        const selectParam = searchParams.get('select');
-        if (selectParam && roomsData.length > 0) {
-          const found = roomsData.find((r: any) => 
-            r.name.toLowerCase().includes(selectParam.toLowerCase())
-          );
-          if (found) {
-            setSelectedRoom(found);
-          }
+    const cachedRooms = sessionStorage.getItem('homestays_rooms');
+    
+    if (cachedRooms) {
+      const roomsData = JSON.parse(cachedRooms);
+      setRooms(roomsData);
+      setIsLoading(false);
+      
+      const searchParams = new URLSearchParams(window.location.search);
+      const selectParam = searchParams.get('select');
+      if (selectParam && roomsData.length > 0) {
+        const found = roomsData.find((r: any) => 
+          r.name.toLowerCase().includes(selectParam.toLowerCase())
+        );
+        if (found) {
+          setSelectedRoom(found);
         }
-      })
-      .catch((err) => {
-        console.error("Failed to fetch rooms:", err);
-        setRooms([]);
-        setIsLoading(false);
-      });
+      }
+    } else {
+      fetch('/api/rooms')
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch rooms");
+          return res.json();
+        })
+        .then((data) => {
+          const roomsData = Array.isArray(data) ? data : [];
+          setRooms(roomsData);
+          sessionStorage.setItem('homestays_rooms', JSON.stringify(roomsData));
+          setIsLoading(false);
+  
+          // Check for URL select parameter
+          const searchParams = new URLSearchParams(window.location.search);
+          const selectParam = searchParams.get('select');
+          if (selectParam && roomsData.length > 0) {
+            const found = roomsData.find((r: any) => 
+              r.name.toLowerCase().includes(selectParam.toLowerCase())
+            );
+            if (found) {
+              setSelectedRoom(found);
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch rooms:", err);
+          setRooms([]);
+          setIsLoading(false);
+        });
+    }
       
     if (user && session?.access_token) {
       fetchBookings();
@@ -328,14 +353,14 @@ export default function Dashboard() {
                     </button>
                     <button 
                       onClick={() => handleBook(selectedRoom.id)}
-                      disabled={!checkIn || !checkOut || new Date(checkOut) <= new Date(checkIn)}
+                      disabled={isSubmitting || !checkIn || !checkOut || new Date(checkOut) <= new Date(checkIn)}
                       className={`flex-1 py-3 px-6 rounded-xl font-bold transition-all duration-300 border-none text-white ${
-                        checkIn && checkOut && new Date(checkOut) > new Date(checkIn)
+                        !isSubmitting && checkIn && checkOut && new Date(checkOut) > new Date(checkIn)
                           ? 'bg-emerald-700 hover:bg-emerald-800 shadow-md dark:bg-emerald-600'
                           : 'bg-stone-300 cursor-not-allowed dark:bg-gray-800'
                       }`}
                     >
-                      Confirm Booking
+                      {isSubmitting ? 'Booking...' : 'Confirm Booking'}
                     </button>
                   </div>
                 </>
