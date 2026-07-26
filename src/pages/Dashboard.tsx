@@ -109,7 +109,12 @@ export default function Dashboard() {
             Welcome back, Traveler! Here are your upcoming trips and new eco-homestays to discover.
           </p>
         </div>
-        <Button className="mt-6 md:mt-0 shadow-lg shadow-primary/20">
+        <Button 
+          className="mt-6 md:mt-0 shadow-lg shadow-primary/20"
+          onClick={() => {
+            document.getElementById('recommended-section')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
           Book New Stay
         </Button>
       </div>
@@ -150,7 +155,7 @@ export default function Dashboard() {
           )}
           
           {/* Bottom Section: Recommended Homestays (expanded to 3 columns) */}
-          <section className="flex flex-col gap-6">
+          <section id="recommended-section" className="flex flex-col gap-6">
             <h3 className="text-2xl font-serif font-bold text-primary-hover dark:text-primary-light mb-2">
               Recommended for You
             </h3>
