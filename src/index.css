@@ -20,11 +20,6 @@
 @layer base {
   body {
     @apply bg-background text-text-primary font-sans antialiased;
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 0l16 12.279-6.951 1.17 4.325 8.817-3.596 1.734-4.35-8.879-5.428 4.702z" fill="%23059669" stroke="%23ffffff" stroke-width="1.5" stroke-linejoin="round"/></svg>') 4 0, auto;
-  }
-  
-  a, button, [role="button"], label {
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 2C10 0.89543 10.8954 0 12 0C13.1046 0 14 0.89543 14 2V9.5C14 9.5 15.5 8 17 8C18.1046 8 19 8.89543 19 10V14.5L16 23.5H9L4.5 16.5L7 13.5L10 16.5V2Z" fill="%23059669" stroke="%23ffffff" stroke-width="1.5" stroke-linejoin="round"/></svg>') 10 2, pointer;
   }
   
   h1, h2, h3, h4, h5, h6 {

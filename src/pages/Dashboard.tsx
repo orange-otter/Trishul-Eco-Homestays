@@ -247,19 +247,11 @@ export default function Dashboard() {
 
       {/* Homestay Detail Modal Box */}
       {selectedRoom && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden max-w-4xl w-full border border-stone-200 dark:border-gray-800 shadow-2xl relative flex flex-col md:flex-row animate-in fade-in zoom-in duration-300">
-            {/* Close Button */}
-            <button 
-              onClick={() => setSelectedRoom(null)}
-              className="absolute top-4 right-4 text-stone-500 hover:text-stone-850 dark:text-stone-400 dark:hover:text-white p-2 bg-white/80 dark:bg-gray-800/80 rounded-full backdrop-blur-md transition-colors cursor-pointer border-none z-20 shadow-sm"
-              aria-label="Close details"
-            >
-              <X size={20} />
-            </button>
-
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden max-w-[900px] w-full shadow-2xl relative flex flex-col md:flex-row animate-in fade-in zoom-in-95 duration-300 max-h-[95vh] md:max-h-[85vh]">
+            
             {/* Modal Image */}
-            <div className="w-full md:w-1/2 h-56 md:h-auto md:min-h-[500px] relative">
+            <div className="w-full md:w-1/2 h-64 md:h-auto relative shrink-0">
               <img 
                 src={selectedRoom.image_url} 
                 alt={selectedRoom.name} 
@@ -268,123 +260,135 @@ export default function Dashboard() {
             </div>
 
             {/* Modal Body */}
-            <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col gap-4">
-              <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-hover dark:text-primary-light pr-8">
-                {selectedRoom.name}
-              </h2>
-              
-              <div className="flex justify-between items-center text-lg">
-                <span className="font-semibold text-emerald-700 dark:text-emerald-400">
-                  ₹{selectedRoom.price} / night
-                </span>
-                <span className={`text-sm px-3 py-1 rounded-full font-medium ${
-                  selectedRoom.is_available 
-                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400' 
-                    : 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-400'
-                }`}>
-                  {selectedRoom.is_available ? 'Available' : 'Sold Out'}
-                </span>
-              </div>
+            <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative overflow-y-auto">
+              {/* Close Button */}
+              <button 
+                onClick={() => setSelectedRoom(null)}
+                className="absolute top-6 right-6 p-2 bg-stone-100 hover:bg-stone-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-stone-500 dark:text-stone-400 rounded-full transition-colors z-10"
+                aria-label="Close details"
+              >
+                <X size={20} />
+              </button>
 
-              {/* Extra Details / Amenities */}
-              {!isBookingStep ? (
-                <>
-                  <p className="text-text-secondary dark:text-gray-400 leading-relaxed text-base md:text-lg mt-4">
-                    {selectedRoom.description}
-                  </p>
-                  <div className="mt-2 border-t border-stone-100 dark:border-gray-800 pt-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-stone-450 mb-2">Features & Amenities</h4>
-                    <div className="flex flex-wrap gap-2 text-xs">
-                      <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">100% Eco-Friendly</span>
-                      <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">Organic Meals Included</span>
-                      <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">Local Guided Treks</span>
-                      <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-200/50 dark:border-gray-700/50">Solar Powered</span>
+              <div className="flex flex-col h-full">
+                <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary-hover dark:text-primary-light pr-12 mb-4 leading-tight mt-2 md:mt-0">
+                  {selectedRoom.name}
+                </h2>
+                
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <span className="text-xl font-bold text-emerald-700 dark:text-emerald-400">
+                    ₹{selectedRoom.price} <span className="text-sm text-stone-500 dark:text-stone-400 font-normal">/ night</span>
+                  </span>
+                  <span className={`text-sm px-3 py-1 rounded-full font-medium ${
+                    selectedRoom.is_available 
+                      ? 'bg-emerald-100/80 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400' 
+                      : 'bg-red-100/80 text-red-800 dark:bg-red-900/50 dark:text-red-400'
+                  }`}>
+                    {selectedRoom.is_available ? 'Available' : 'Sold Out'}
+                  </span>
+                </div>
+
+                {/* Extra Details / Amenities */}
+                {!isBookingStep ? (
+                  <div className="flex flex-col flex-grow">
+                    <p className="text-text-secondary dark:text-gray-400 leading-relaxed text-base mb-8 flex-grow">
+                      {selectedRoom.description}
+                    </p>
+                    
+                    <div className="mb-8">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-3">Features & Amenities</h4>
+                      <div className="flex flex-wrap gap-2 text-sm font-medium">
+                        <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-100 dark:border-gray-700">100% Eco-Friendly</span>
+                        <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-100 dark:border-gray-700">Organic Meals</span>
+                        <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-100 dark:border-gray-700">Guided Treks</span>
+                        <span className="bg-stone-50 dark:bg-gray-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-lg border border-stone-100 dark:border-gray-700">Solar Powered</span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-4 mt-auto pt-4 border-t border-stone-100 dark:border-gray-800">
+                      <button 
+                        onClick={() => { setSelectedRoom(null); setIsBookingStep(false); }}
+                        className="flex-1 py-3.5 px-6 rounded-xl border-2 border-stone-200 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-bold hover:bg-stone-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (!user) {
+                            toast.error('Please log in to book a homestay');
+                            navigate('/login');
+                          } else {
+                            setIsBookingStep(true);
+                          }
+                        }}
+                        disabled={!selectedRoom.is_available}
+                        className={`flex-[2] py-3.5 px-6 rounded-xl font-bold tracking-wide transition-all duration-300 text-center text-white ${
+                          selectedRoom.is_available
+                            ? 'bg-emerald-700 hover:bg-emerald-800 hover:-translate-y-0.5 shadow-lg shadow-emerald-900/20 dark:bg-emerald-600 dark:hover:bg-emerald-700'
+                            : 'bg-stone-300 cursor-not-allowed dark:bg-gray-700 dark:text-stone-500'
+                        }`}
+                      >
+                        Book Stay Now
+                      </button>
                     </div>
                   </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-4 mt-6">
-                    <button 
-                      onClick={() => { setSelectedRoom(null); setIsBookingStep(false); }}
-                      className="flex-1 py-3 px-6 rounded-xl border border-stone-300 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-semibold hover:bg-stone-50 dark:hover:bg-gray-850 transition-colors cursor-pointer"
-                    >
-                      Close
-                    </button>
-                    <button 
-                      onClick={() => {
-                        if (!user) {
-                          toast.error('Please log in to book a homestay');
-                          navigate('/login');
-                        } else {
-                          setIsBookingStep(true);
-                        }
-                      }}
-                      disabled={!selectedRoom.is_available}
-                      className={`flex-1 py-3 px-6 rounded-xl font-bold tracking-wide transition-all duration-300 border-none cursor-pointer text-center text-white ${
-                        selectedRoom.is_available
-                          ? 'bg-emerald-700 hover:bg-emerald-800 hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md dark:bg-emerald-600 dark:hover:bg-emerald-700'
-                          : 'bg-stone-300 cursor-not-allowed dark:bg-gray-800 dark:text-stone-550'
-                      }`}
-                    >
-                      Book Stay Now
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="mt-4 flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-sm font-semibold text-stone-600 dark:text-stone-300">Check-in Date</label>
-                      <input 
-                        type="date" 
-                        value={checkIn}
-                        onChange={(e) => setCheckIn(e.target.value)}
-                        min={new Date().toISOString().split('T')[0]}
-                        className="p-3 rounded-lg border border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-sm font-semibold text-stone-600 dark:text-stone-300">Check-out Date</label>
-                      <input 
-                        type="date" 
-                        value={checkOut}
-                        onChange={(e) => setCheckOut(e.target.value)}
-                        min={checkIn || new Date().toISOString().split('T')[0]}
-                        className="p-3 rounded-lg border border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
+                ) : (
+                  <div className="flex flex-col flex-grow">
+                    <div className="flex flex-col gap-5 flex-grow mb-8">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-sm font-semibold text-stone-700 dark:text-stone-300">Check-in Date</label>
+                        <input 
+                          type="date" 
+                          value={checkIn}
+                          onChange={(e) => setCheckIn(e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          className="p-3.5 rounded-xl border-2 border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-0 transition-colors"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-sm font-semibold text-stone-700 dark:text-stone-300">Check-out Date</label>
+                        <input 
+                          type="date" 
+                          value={checkOut}
+                          onChange={(e) => setCheckOut(e.target.value)}
+                          min={checkIn || new Date().toISOString().split('T')[0]}
+                          className="p-3.5 rounded-xl border-2 border-stone-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-stone-800 dark:text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-0 transition-colors"
+                        />
+                      </div>
+                      
+                      {checkIn && checkOut && new Date(checkOut) > new Date(checkIn) && (
+                        <div className="mt-4 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-xl flex justify-between items-center">
+                          <span className="font-semibold text-stone-700 dark:text-stone-300">Total for Stay:</span>
+                          <span className="font-bold text-2xl text-emerald-700 dark:text-emerald-400">
+                            ₹{selectedRoom.price * Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     
-                    {checkIn && checkOut && new Date(checkOut) > new Date(checkIn) && (
-                      <div className="mt-2 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex justify-between items-center">
-                        <span className="font-semibold text-stone-700 dark:text-stone-300">Total Price:</span>
-                        <span className="font-bold text-lg text-emerald-700 dark:text-emerald-400">
-                          ₹{selectedRoom.price * Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex gap-4 mt-auto pt-4 border-t border-stone-100 dark:border-gray-800">
+                      <button 
+                        onClick={() => setIsBookingStep(false)}
+                        className="flex-1 py-3.5 px-6 rounded-xl border-2 border-stone-200 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-bold hover:bg-stone-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        Back
+                      </button>
+                      <button 
+                        onClick={() => handleBook(selectedRoom.id)}
+                        disabled={isSubmitting || !checkIn || !checkOut || new Date(checkOut) <= new Date(checkIn)}
+                        className={`flex-[2] py-3.5 px-6 rounded-xl font-bold transition-all duration-300 text-white ${
+                          !isSubmitting && checkIn && checkOut && new Date(checkOut) > new Date(checkIn)
+                            ? 'bg-emerald-700 hover:bg-emerald-800 hover:-translate-y-0.5 shadow-lg shadow-emerald-900/20 dark:bg-emerald-600 dark:hover:bg-emerald-700'
+                            : 'bg-stone-300 cursor-not-allowed dark:bg-gray-700 dark:text-stone-500'
+                        }`}
+                      >
+                        {isSubmitting ? 'Booking...' : 'Confirm Booking'}
+                      </button>
+                    </div>
                   </div>
-                  
-                  <div className="flex gap-4 mt-6">
-                    <button 
-                      onClick={() => setIsBookingStep(false)}
-                      className="flex-1 py-3 px-6 rounded-xl border border-stone-300 dark:border-gray-700 text-stone-700 dark:text-stone-300 font-semibold hover:bg-stone-50 dark:hover:bg-gray-850 transition-colors"
-                    >
-                      Back
-                    </button>
-                    <button 
-                      onClick={() => handleBook(selectedRoom.id)}
-                      disabled={isSubmitting || !checkIn || !checkOut || new Date(checkOut) <= new Date(checkIn)}
-                      className={`flex-1 py-3 px-6 rounded-xl font-bold transition-all duration-300 border-none text-white ${
-                        !isSubmitting && checkIn && checkOut && new Date(checkOut) > new Date(checkIn)
-                          ? 'bg-emerald-700 hover:bg-emerald-800 shadow-md dark:bg-emerald-600'
-                          : 'bg-stone-300 cursor-not-allowed dark:bg-gray-800'
-                      }`}
-                    >
-                      {isSubmitting ? 'Booking...' : 'Confirm Booking'}
-                    </button>
-                  </div>
-                </>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
