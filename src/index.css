@@ -18,23 +18,6 @@
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
-  :root {
-    --beam-base: #000000;
-    --beam-base-op: 0.15;
-    --beam-grad-1: #059669;
-    --beam-grad-2: #047857;
-    --beam-grad-3: #022c22;
-    --beam-grad-op: 0.8;
-  }
-  .dark {
-    --beam-base: #d4d4d4;
-    --beam-base-op: 0.05;
-    --beam-grad-1: #10b981;
-    --beam-grad-2: #047857;
-    --beam-grad-3: #022c22;
-    --beam-grad-op: 0.4;
-  }
-
   body {
     @apply bg-background text-text-primary font-sans antialiased;
   }
