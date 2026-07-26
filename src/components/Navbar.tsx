@@ -53,9 +53,11 @@ export default function Navbar() {
             >
               {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
             </button>
-            <Button variant="outline" size="sm">
-              BOOK NOW
-            </Button>
+            <Link to="/dashboard">
+              <Button variant="outline" size="sm">
+                BOOK NOW
+              </Button>
+            </Link>
             {user ? (
               <div className="flex items-center gap-4">
                 {user.is_admin && (
@@ -129,9 +131,11 @@ export default function Navbar() {
                 <User size={20} /> Login / Register
               </Link>
             )}
-            <Button variant="primary" className="w-full">
-              BOOK NOW
-            </Button>
+            <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+              <Button variant="primary" className="w-full">
+                BOOK NOW
+              </Button>
+            </Link>
           </div>
         </div>
       )}
