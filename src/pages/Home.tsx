@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Hero from '../components/Hero';
 import Card from '../components/Card';
 import { Loader } from '../components/ui/Loader';
+import { BackgroundBeams } from '../components/ui/background-beams';
 
 interface Room {
   id: number;
@@ -34,48 +35,52 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Hero 
-        headline="Discover Authentic Village Tourism"
-        subheadline="Stay with local communities in Chopta, Uttarakhand. Experience sustainable travel that preserves nature and empowers locals."
-        ctaText="Explore Homestays"
-        ctaLink="/dashboard"
-        image="/images/hero_banner_1782036855076.png"
-      />
+    <div className="flex flex-col min-h-screen relative w-full overflow-hidden bg-background dark:bg-gray-950">
+      <BackgroundBeams className="absolute inset-0 z-0 opacity-80" />
       
-      <section className="py-20 bg-background dark:bg-gray-950">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary dark:text-white mb-4">Featured Eco-Homestays</h2>
-            <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
+      <div className="relative z-10 flex flex-col w-full">
+        <Hero 
+          headline="Discover Authentic Village Tourism"
+          subheadline="Stay with local communities in Chopta, Uttarakhand. Experience sustainable travel that preserves nature and empowers locals."
+          ctaText="Explore Homestays"
+          ctaLink="/dashboard"
+          image="/images/hero_banner_1782036855076.png"
+        />
+        
+        <section className="py-20 relative bg-background/50 dark:bg-gray-950/50 backdrop-blur-sm">
+          <div className="max-w-[1200px] mx-auto px-6 relative z-20">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary dark:text-white mb-4">Featured Eco-Homestays</h2>
+              <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
+            </div>
+            
+            {isLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader size="lg" className="text-primary" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {rooms.slice(0, 3).map((room, index) => (
+                  <div key={room.id} className={`animate-in fade-in slide-in-from-bottom-8 duration-700 delay-${(index + 1) * 100} fill-mode-both`}>
+                    <Card 
+                      title={room.name}
+                      description={room.description || "A beautiful homestay."}
+                      image={room.image_url || "/images/himalayan_home_1782036868366.png"}
+                      actionText="View Details"
+                      actionLink={`/dashboard?select=${encodeURIComponent(room.name)}`}
+                    />
+                  </div>
+                ))}
+                {rooms.length === 0 && (
+                  <div className="col-span-full text-center text-text-secondary py-10">
+                    No homestays available right now.
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-          
-          {isLoading ? (
-            <div className="flex justify-center py-10">
-              <Loader size="lg" className="text-primary" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {rooms.slice(0, 3).map((room, index) => (
-                <div key={room.id} className={`animate-in fade-in slide-in-from-bottom-8 duration-700 delay-${(index + 1) * 100} fill-mode-both`}>
-                  <Card 
-                    title={room.name}
-                    description={room.description || "A beautiful homestay."}
-                    image={room.image_url || "/images/himalayan_home_1782036868366.png"}
-                    actionText="View Details"
-                    actionLink={`/dashboard?select=${encodeURIComponent(room.name)}`}
-                  />
-                </div>
-              ))}
-              {rooms.length === 0 && (
-                <div className="col-span-full text-center text-text-secondary py-10">
-                  No homestays available right now.
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }
