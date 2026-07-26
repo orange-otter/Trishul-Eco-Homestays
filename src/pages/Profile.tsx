@@ -5,6 +5,7 @@ import { LogOut } from 'lucide-react';
 import { Button } from '../components/ui';
 import { Loader } from '../components/ui/Loader';
 import Card from '../components/Card';
+import { ManageBookingModal } from '../components/ManageBookingModal';
 
 export default function Profile() {
   const { user, session, logout } = useAuth();
@@ -12,6 +13,17 @@ export default function Profile() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [managingBooking, setManagingBooking] = useState<any | null>(null);
+  const [manageMode, setManageMode] = useState<'edit' | 'cancel'>('edit');
+
+  const fetchBookings = () => {
+    if (!session?.access_token) return;
+    fetch('/api/bookings/me', {
+      headers: { 'Authorization': `Bearer ${session.access_token}` }
+    })
+    .then(res => res.json())
+    .then(data => setBookings(Array.isArray(data) ? data : []));
+  };
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -88,9 +100,28 @@ export default function Profile() {
                     title={room?.name || "Unknown Homestay"}
                     description={`Check-in: ${booking.check_in} | Check-out: ${booking.check_out} | Total: ₹${booking.total_price}`}
                     image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
-                    actionText="View Receipt"
-                    onAction={() => alert('Receipt feature coming soon!')}
-                  />
+                  >
+                    <div className="flex gap-3 w-full">
+                      <button 
+                        onClick={() => {
+                          setManagingBooking(booking);
+                          setManageMode('edit');
+                        }}
+                        className="flex-1 py-1.5 text-primary font-semibold border border-primary/30 rounded-md hover:bg-primary/5 transition-colors text-xs"
+                      >
+                        Edit Dates
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setManagingBooking(booking);
+                          setManageMode('cancel');
+                        }}
+                        className="flex-1 py-1.5 text-red-500 font-semibold border border-red-500/30 rounded-md hover:bg-red-500/5 transition-colors text-xs"
+                      >
+                        Cancel Trip
+                      </button>
+                    </div>
+                  </Card>
                 );
               })}
             </div>
@@ -102,6 +133,18 @@ export default function Profile() {
           )}
         </div>
       </div>
+      
+      <ManageBookingModal 
+        isOpen={!!managingBooking}
+        onClose={() => setManagingBooking(null)}
+        mode={manageMode}
+        booking={managingBooking}
+        room={rooms.find(r => r.id === managingBooking?.room_id)}
+        onSuccess={() => {
+          setManagingBooking(null);
+          fetchBookings();
+        }}
+      />
     </div>
   );
 }

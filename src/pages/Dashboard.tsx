@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { AIAssistant } from '../components/AIAssistant';
 import { X } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { ManageBookingModal } from '../components/ManageBookingModal';
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -101,23 +102,8 @@ export default function Dashboard() {
     });
   };
 
-  const handleCancelBooking = (bookingId: number) => {
-    if (window.confirm("Are you sure you want to cancel this trip?")) {
-      fetch(`/api/bookings/${bookingId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${session?.access_token}` }
-      })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to cancel booking");
-        toast.success("Trip cancelled successfully");
-        fetchBookings();
-      })
-      .catch(err => {
-        console.error(err);
-        toast.error("Failed to cancel trip");
-      });
-    }
-  };
+  const [managingBooking, setManagingBooking] = useState<any | null>(null);
+  const [manageMode, setManageMode] = useState<'edit' | 'cancel'>('edit');
 
   useEffect(() => {
     const cachedRooms = sessionStorage.getItem('homestays_rooms');
@@ -229,15 +215,27 @@ export default function Dashboard() {
                         title={room?.name || "Unknown Homestay"}
                         description={`Check-in: ${booking.check_in} | Check-out: ${booking.check_out} | Total: ₹${booking.total_price}`}
                         image={room?.image_url || "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"}
-                        actionText="View Details"
-                        onAction={() => room && setSelectedRoom(room)}
                       >
-                        <button 
-                          onClick={() => handleCancelBooking(booking.id)}
-                          className="text-red-500 hover:text-red-700 dark:hover:text-red-400 font-semibold text-sm transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none p-0"
-                        >
-                          <X size={16} /> Cancel Trip
-                        </button>
+                        <div className="flex gap-4 w-full">
+                          <button 
+                            onClick={() => {
+                              setManagingBooking(booking);
+                              setManageMode('edit');
+                            }}
+                            className="flex-1 py-2 text-primary font-semibold border border-primary/30 rounded-lg hover:bg-primary/5 transition-colors text-sm"
+                          >
+                            Edit Dates
+                          </button>
+                          <button 
+                            onClick={() => {
+                              setManagingBooking(booking);
+                              setManageMode('cancel');
+                            }}
+                            className="flex-1 py-2 text-red-500 font-semibold border border-red-500/30 rounded-lg hover:bg-red-500/5 transition-colors text-sm"
+                          >
+                            Cancel Trip
+                          </button>
+                        </div>
                       </Card>
                     );
                   })}
@@ -418,6 +416,18 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+      
+      <ManageBookingModal 
+        isOpen={!!managingBooking}
+        onClose={() => setManagingBooking(null)}
+        mode={manageMode}
+        booking={managingBooking}
+        room={rooms.find(r => r.id === managingBooking?.room_id)}
+        onSuccess={() => {
+          setManagingBooking(null);
+          fetchBookings();
+        }}
+      />
     </div>
   );
 }
