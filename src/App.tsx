@@ -25,10 +25,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/oauth/callback" element={<OAuthCallback />} />
           
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/homestays" element={<Navigate to="/dashboard" replace />} />
+          
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/homestays" element={<Navigate to="/dashboard" replace />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/profile" element={<Profile />} />
             {/* The Book/Checkout route will go here once implemented. We'll protect dashboard booking action later. */}
