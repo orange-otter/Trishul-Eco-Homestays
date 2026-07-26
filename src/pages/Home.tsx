@@ -1,7 +1,34 @@
+import { useState, useEffect } from 'react';
 import Hero from '../components/Hero';
 import Card from '../components/Card';
+import { Loader } from '../components/ui/Loader';
+
+interface Room {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  image_url: string;
+  is_available: boolean;
+}
 
 export default function Home() {
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/rooms')
+      .then((res) => res.json())
+      .then((data) => {
+        setRooms(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch rooms:", err);
+        setIsLoading(false);
+      });
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Hero 
@@ -18,35 +45,31 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary dark:text-white mb-4">Featured Eco-Homestays</h2>
             <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 fill-mode-both">
-              <Card 
-                title="Himalayan Heritage Home"
-                description="A traditional stone and wood house offering panoramic views of the Trishul peaks. Includes home-cooked organic meals."
-                image="/images/himalayan_home_1782036868366.png"
-                actionText="View Details"
-                actionLink="/dashboard?select=Himalayan Heritage Home"
-              />
+          
+          {isLoading ? (
+            <div className="flex justify-center py-10">
+              <Loader size="lg" className="text-primary" />
             </div>
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 fill-mode-both">
-              <Card 
-                title="Chopta Eco Retreat"
-                description="Nestled in the lush meadows of Chopta, this retreat offers panoramic views of the Trishul peak and runs entirely on solar power."
-                image="/images/forest_retreat_1782036881847.png"
-                actionText="View Details"
-                actionLink="/dashboard?select=Chopta Eco Retreat"
-              />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {rooms.slice(0, 3).map((room, index) => (
+                <div key={room.id} className={`animate-in fade-in slide-in-from-bottom-8 duration-700 delay-${(index + 1) * 100} fill-mode-both`}>
+                  <Card 
+                    title={room.name}
+                    description={room.description || "A beautiful homestay."}
+                    image={room.image_url || "/images/himalayan_home_1782036868366.png"}
+                    actionText="View Details"
+                    actionLink={`/dashboard?select=${encodeURIComponent(room.name)}`}
+                  />
+                </div>
+              ))}
+              {rooms.length === 0 && (
+                <div className="col-span-full text-center text-text-secondary py-10">
+                  No homestays available right now.
+                </div>
+              )}
             </div>
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 fill-mode-both">
-              <Card 
-                title="Garhwal Valley Homestay"
-                description="A traditional home run by local village village women. Learn Garhwali cooking, participate in organic farming, and explore remote mountain paths."
-                image="/images/village_stay_1782036896920.png"
-                actionText="View Details"
-                actionLink="/dashboard?select=Garhwal Valley"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </section>
     </div>
