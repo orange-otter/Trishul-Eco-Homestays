@@ -9,6 +9,22 @@ The platform connects conscious travelers with local village communities, offeri
 - A sustainable livelihood stream for remote villagers.
 - Preservation of the pristine Himalayan environment through eco-tourism practices.
 
+## Live URLs & Tech Stack
+
+### Live URLs
+- **Frontend:** https://trishul-eco-homestays.vercel.app
+- **Backend (API):** https://trishul-eco-homestays.vercel.app/api
+
+### Tech Stack Summary
+| Layer | Technology |
+| --- | --- |
+| **Frontend** | React 19 + Vite, TypeScript, Tailwind CSS, React Router DOM, Lucide React, Framer Motion |
+| **Backend** | Python, FastAPI, SQLAlchemy, JWT Auth, passlib/bcrypt, slowapi (rate limiting) |
+| **AI** | Google Gemini API (itinerary planner & homestay recommender) |
+| **Database** | PostgreSQL (hosted on Supabase) |
+| **Auth** | Supabase Auth |
+| **Deployment** | Vercel (frontend + serverless API) |
+
 ## Technologies Used
 - React + Vite
 - TypeScript
@@ -20,7 +36,7 @@ The platform connects conscious travelers with local village communities, offeri
 
 ### Admin Dashboard (CRUD Operations)
 The platform includes an Admin Dashboard for managing homestays (Create, Read, Update, Delete).
-- **Access**: Navigate to `/admin` in the browser (e.g. `http://localhost:8000/admin` or `https://[your-vercel-url].vercel.app/admin`).
+- **Access**: Navigate to `/admin` in the browser (e.g. `http://localhost:8000/admin` or `https://trishul-eco-homestays.vercel.app/admin`).
 - **Password**: `admin.homestay.4321`
 
 ### Frontend Setup
