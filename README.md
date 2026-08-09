@@ -2,6 +2,25 @@
 
 Trishul Eco-Homestays is a sustainable village tourism platform designed for travelers seeking authentic cultural immersion and eco-friendly stays in Chopta, Uttarakhand.
 
+## Live Links
+- **Live Demo:** [https://trishul-eco-homestays.vercel.app](https://trishul-eco-homestays.vercel.app/)
+- **Backend (API):** [https://trishul-eco-homestays.vercel.app/api](https://trishul-eco-homestays.vercel.app/api)
+- **Developer LinkedIn:** [Samarth Badola](https://www.linkedin.com/in/samarth-badola/)
+
+## Screenshots
+
+### Authenticated Dashboard
+![Authenticated Dashboard](screenshots/1_dashboard.png)
+
+### Create Booking Flow
+![Create Booking Flow](screenshots/2_create.c.png)
+
+### AI Feature Output
+![AI Feature Output](screenshots/4b_ai_output.png)
+
+### Responsive Mobile View
+![Responsive Mobile View](screenshots/5b_mobile.png)
+
 ## Overview
 
 The platform connects conscious travelers with local village communities, offering:
@@ -9,13 +28,7 @@ The platform connects conscious travelers with local village communities, offeri
 - A sustainable livelihood stream for remote villagers.
 - Preservation of the pristine Himalayan environment through eco-tourism practices.
 
-## Live URLs & Tech Stack
-
-### Live URLs
-- **Frontend:** https://trishul-eco-homestays.vercel.app
-- **Backend (API):** https://trishul-eco-homestays.vercel.app/api
-
-### Tech Stack Summary
+## Tech Stack Summary
 | Layer | Technology |
 | --- | --- |
 | **Frontend** | React 19 + Vite, TypeScript, Tailwind CSS, React Router DOM, Lucide React, Framer Motion |
@@ -24,13 +37,6 @@ The platform connects conscious travelers with local village communities, offeri
 | **Database** | PostgreSQL (hosted on Supabase) |
 | **Auth** | Supabase Auth |
 | **Deployment** | Vercel (frontend + serverless API) |
-
-## Technologies Used
-- React + Vite
-- TypeScript
-- Custom Vanilla CSS (Design System)
-- React Router DOM
-- Lucide React (Icons)
 
 ## Getting Started
 
